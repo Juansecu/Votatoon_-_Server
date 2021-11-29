@@ -1,9 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { IRaceResponseMessage } from '../typings/RaceResponseMessage';
 import { IErrorResponseMessage } from '../../shared/typings/ErrorResponseMessage';
+
+import { RaceDto } from '../dtos/Race.dto';
+import { ContestantDto } from '../../contestants/dtos/contestant.dto';
 
 import { RaceEntity } from '../entities/race.entity';
 import { ContestantEntity } from '../../contestants/entities/contestant.entity';
@@ -18,12 +20,11 @@ export class RacesService {
     private readonly _CONTESTANTS_SERVICE: ContestantsService,
     @InjectRepository(RaceEntity)
     private readonly _RACES_REPOSITORY: Repository<RaceEntity>,
+    @Inject(forwardRef(() => VotesService))
     private readonly _VOTES_SERVICE: VotesService
   ) {}
 
-  async getCurrentRace(): Promise<
-    IRaceResponseMessage | IErrorResponseMessage
-  > {
+  async getCurrentRace(): Promise<RaceDto | IErrorResponseMessage> {
     try {
       const race: RaceEntity = await this._RACES_REPOSITORY.findOne({
         where: { active: parseInt('1') }
@@ -35,6 +36,9 @@ export class RacesService {
 
         if (votesTotal instanceof Array && votesTotal.length === 2) {
           let contestants: ContestantEntity[] = [];
+          let raceDto: RaceDto = null;
+          let toonA: ContestantDto = null;
+          let toonB: ContestantDto = null;
 
           const contestantIds: number[] = [];
 
@@ -46,29 +50,34 @@ export class RacesService {
             contestantIds
           );
 
-          return {
-            id: race.raceId,
-            index: 0,
-            toonA: contestants[0],
-            toonB: contestants[1],
-            aVotesPercent: Math.round(
+          toonA = new ContestantDto(contestants[0]);
+          toonB = new ContestantDto(contestants[1]);
+
+          raceDto = new RaceDto(
+            race.raceId,
+            0,
+            toonA,
+            toonB,
+            Math.round(
               (votesTotal[0].voteTotalValue /
                 (votesTotal[0].voteTotalValue + votesTotal[1].voteTotalValue)) *
                 100
             ),
-            bVotesPercent: Math.round(
+            Math.round(
               (votesTotal[1].voteTotalValue /
                 (votesTotal[0].voteTotalValue + votesTotal[1].voteTotalValue)) *
                 100
             ),
-            aVotesTotal: votesTotal[0].voteTotalValue,
-            bVotesTotal: votesTotal[1].voteTotalValue,
-            aSmallImagePath: contestants[0].smallImagePath,
-            bSmallImagePath: contestants[1].smallImagePath,
-            aLargeImagePath: contestants[0].largeImagePath,
-            bLargeImagePath: contestants[1].largeImagePath,
-            active: true
-          };
+            votesTotal[0].voteTotalValue,
+            votesTotal[1].voteTotalValue,
+            toonA.smallImagePath,
+            toonB.smallImagePath,
+            toonA.largeImagePath,
+            toonB.largeImagePath,
+            race.active ? true : false
+          );
+
+          return raceDto;
         }
 
         return {
@@ -89,10 +98,10 @@ export class RacesService {
     }
   }
 
-  async getRaceList(): Promise<IRaceResponseMessage[] | IErrorResponseMessage> {
+  async getRaceList(): Promise<RaceDto[] | IErrorResponseMessage> {
     try {
       const races: RaceEntity[] = await this._RACES_REPOSITORY.find();
-      const raceList: IRaceResponseMessage[] = [];
+      const raceList: RaceDto[] = [];
 
       await Promise.all(
         races.map(async (raceEntity: RaceEntity) => {
@@ -101,6 +110,8 @@ export class RacesService {
 
           if (votesTotal instanceof Array && votesTotal.length === 2) {
             let contestants: ContestantEntity[] = [];
+            let toonA: ContestantDto = null;
+            let toonB: ContestantDto = null;
 
             const contestantIds: number[] = [];
 
@@ -112,11 +123,14 @@ export class RacesService {
               contestantIds
             );
 
+            toonA = new ContestantDto(contestants[0]);
+            toonB = new ContestantDto(contestants[1]);
+
             raceList.push({
               id: raceEntity.raceId,
               index: raceList.length,
-              toonA: contestants[0],
-              toonB: contestants[1],
+              toonA,
+              toonB,
               aVotesPercent: Math.round(
                 (votesTotal[0].voteTotalValue /
                   (votesTotal[0].voteTotalValue +
@@ -131,10 +145,10 @@ export class RacesService {
               ),
               aVotesTotal: votesTotal[0].voteTotalValue,
               bVotesTotal: votesTotal[1].voteTotalValue,
-              aSmallImagePath: contestants[0].smallImagePath,
-              bSmallImagePath: contestants[1].smallImagePath,
-              aLargeImagePath: contestants[0].largeImagePath,
-              bLargeImagePath: contestants[1].largeImagePath,
+              aSmallImagePath: toonA.smallImagePath,
+              bSmallImagePath: toonB.smallImagePath,
+              aLargeImagePath: toonA.largeImagePath,
+              bLargeImagePath: toonB.largeImagePath,
               active: raceEntity.active ? true : false
             });
           }
