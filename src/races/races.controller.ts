@@ -15,4 +15,9 @@ export class RacesController {
   > {
     return await this._RACES_SERVICE.getCurrentRace();
   }
+
+  @Get('all')
+  async getRaceList(): Promise<IRaceResponseMessage[] | IErrorResponseMessage> {
+    return await this._RACES_SERVICE.getRaceList();
+  }
 }

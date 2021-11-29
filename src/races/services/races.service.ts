@@ -30,12 +30,8 @@ export class RacesService {
       });
 
       if (race) {
-        const votesTotal: VoteTotalEntity[] =
-          (await this._VOTES_SERVICE.getVotesTotalByRaceId(
-            race.raceId
-          )) as VoteTotalEntity[];
-
-        console.log(votesTotal);
+        const votesTotal: VoteTotalEntity[] | IErrorResponseMessage =
+          await this._VOTES_SERVICE.getVotesTotalByRaceId(race.raceId);
 
         if (votesTotal instanceof Array && votesTotal.length === 2) {
           let contestants: ContestantEntity[] = [];
@@ -85,6 +81,67 @@ export class RacesService {
         error: 'NoActiveRace',
         message: 'No active-race was found'
       };
+    } catch (error) {
+      return {
+        error: error.name,
+        message: error.message
+      };
+    }
+  }
+
+  async getRaceList(): Promise<IRaceResponseMessage[] | IErrorResponseMessage> {
+    try {
+      const races: RaceEntity[] = await this._RACES_REPOSITORY.find();
+      const raceList: IRaceResponseMessage[] = [];
+
+      await Promise.all(
+        races.map(async (raceEntity: RaceEntity) => {
+          const votesTotal: VoteTotalEntity[] | IErrorResponseMessage =
+            await this._VOTES_SERVICE.getVotesTotalByRaceId(raceEntity.raceId);
+
+          if (votesTotal instanceof Array && votesTotal.length === 2) {
+            let contestants: ContestantEntity[] = [];
+
+            const contestantIds: number[] = [];
+
+            votesTotal.forEach((voteTotalEntity: VoteTotalEntity) =>
+              contestantIds.push(voteTotalEntity.contestantId)
+            );
+
+            contestants = await this._CONTESTANTS_SERVICE.getContestantsById(
+              contestantIds
+            );
+
+            raceList.push({
+              id: raceEntity.raceId,
+              index: raceList.length,
+              toonA: contestants[0],
+              toonB: contestants[1],
+              aVotesPercent: Math.round(
+                (votesTotal[0].voteTotalValue /
+                  (votesTotal[0].voteTotalValue +
+                    votesTotal[1].voteTotalValue)) *
+                  100
+              ),
+              bVotesPercent: Math.round(
+                (votesTotal[1].voteTotalValue /
+                  (votesTotal[0].voteTotalValue +
+                    votesTotal[1].voteTotalValue)) *
+                  100
+              ),
+              aVotesTotal: votesTotal[0].voteTotalValue,
+              bVotesTotal: votesTotal[1].voteTotalValue,
+              aSmallImagePath: contestants[0].smallImagePath,
+              bSmallImagePath: contestants[1].smallImagePath,
+              aLargeImagePath: contestants[0].largeImagePath,
+              bLargeImagePath: contestants[1].largeImagePath,
+              active: raceEntity.active ? true : false
+            });
+          }
+        })
+      );
+
+      return raceList;
     } catch (error) {
       return {
         error: error.name,
