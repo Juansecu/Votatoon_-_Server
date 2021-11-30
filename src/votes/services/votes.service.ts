@@ -1,4 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -35,15 +40,15 @@ export class VotesService {
 
       if (votesTotal instanceof Array) return votesTotal;
 
-      return {
+      throw new NotFoundException({
         error: 'NoVotesTotal',
         message: 'No vote-total objects were found'
-      };
+      });
     } catch (error) {
-      return {
+      throw new InternalServerErrorException({
         error: error.name,
         message: error.message
-      };
+      });
     }
   }
 
@@ -51,10 +56,10 @@ export class VotesService {
     contestantType: EContestantType
   ): Promise<ISuccessResponseMessage | IErrorResponseMessage> {
     if (contestantType != 'a' && contestantType != 'b')
-      return {
+      throw new BadRequestException({
         error: 'ContestantType Error',
         message: 'Unknown ContestantType'
-      };
+      });
 
     const currentRace = await this._RACES_SERVICE.getCurrentRace();
 
@@ -78,21 +83,21 @@ export class VotesService {
           };
         }
 
-        return {
+        throw new NotFoundException({
           error: 'VoteTotalNotFound',
           message: 'No vote-total object was found'
-        };
+        });
       } catch (error) {
-        return {
+        throw new InternalServerErrorException({
           error: error.name,
           message: error.message
-        };
+        });
       }
     }
 
-    return {
+    throw new NotFoundException({
       error: 'NoActiveRace',
       message: 'No active-race was found'
-    };
+    });
   }
 }

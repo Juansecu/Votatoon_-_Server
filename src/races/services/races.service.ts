@@ -1,4 +1,10 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -74,21 +80,21 @@ export class RacesService {
           return raceDto;
         }
 
-        return {
+        throw new NotFoundException({
           error: 'NoAmountEnough',
           message: 'Not necessary amount of votesTotal was found'
-        };
+        });
       }
 
-      return {
+      throw new NotFoundException({
         error: 'NoActiveRace',
         message: 'No active-race was found'
-      };
+      });
     } catch (error) {
-      return {
+      throw new InternalServerErrorException({
         error: error.name,
         message: error.message
-      };
+      });
     }
   }
 
@@ -146,10 +152,10 @@ export class RacesService {
 
       return raceList;
     } catch (error) {
-      return {
+      throw new InternalServerErrorException({
         error: error.name,
         message: error.message
-      };
+      });
     }
   }
 }
