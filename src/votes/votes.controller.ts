@@ -7,7 +7,7 @@ import { EContestantType } from '../contestants/enums/Contestant';
 
 import { VotesService } from './services/votes.service';
 
-@Controller('CNLA/votes')
+@Controller('votes')
 export class VotesController {
   constructor(private readonly _VOTES_SERVICE: VotesService) {}
 

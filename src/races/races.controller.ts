@@ -6,7 +6,7 @@ import { RaceDto } from './dtos/Race.dto';
 
 import { RacesService } from './services/races.service';
 
-@Controller('CNLA/races')
+@Controller('races')
 export class RacesController {
   constructor(private readonly _RACES_SERVICE: RacesService) {}
 
