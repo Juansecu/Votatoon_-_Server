@@ -1,10 +1,8 @@
-import { ContestantDto } from '../../contestants/dtos/contestant.dto';
-
 export class RaceDto {
   id: number;
   index: number;
-  toonA: ContestantDto;
-  toonB: ContestantDto;
+  toonA: string;
+  toonB: string;
   aVotesPercent: number;
   bVotesPercent: number;
   aVotesTotal: number;
@@ -18,8 +16,8 @@ export class RaceDto {
   constructor(
     id: number,
     index: number,
-    toonA: ContestantDto,
-    toonB: ContestantDto,
+    toonA: string,
+    toonB: string,
     aVotesPercent: number,
     bVotesPercent: number,
     aVotesTotal: number,
