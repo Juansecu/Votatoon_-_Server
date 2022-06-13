@@ -1,7 +1,8 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { RacesModule } from 'src/races/races.module';
+import { LoggersModule } from '../loggers/loggers.module';
+import { RacesModule } from '../races/races.module';
 
 import { VoteTotalEntity } from './entities/vote-total.entity';
 
@@ -12,6 +13,7 @@ import { VotesService } from './services/votes.service';
 @Module({
   imports: [
     TypeOrmModule.forFeature([VoteTotalEntity]),
+    LoggersModule,
     forwardRef(() => RacesModule)
   ],
   controllers: [VotesController],

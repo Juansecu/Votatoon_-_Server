@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ContestantsModule } from '../contestants/contestants.module';
+import { LoggersModule } from '../loggers/loggers.module';
 import { VotesModule } from '../votes/votes.module';
 
 import { RaceEntity } from './entities/race.entity';
@@ -14,6 +15,7 @@ import { RacesService } from './services/races.service';
   imports: [
     TypeOrmModule.forFeature([RaceEntity]),
     ContestantsModule,
+    LoggersModule,
     VotesModule
   ],
   controllers: [RacesController],

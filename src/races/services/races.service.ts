@@ -16,12 +16,14 @@ import { RaceEntity } from '../entities/race.entity';
 import { ContestantEntity } from '../../contestants/entities/contestant.entity';
 import { VoteTotalEntity } from '../../votes/entities/vote-total.entity';
 
+import { ConsoleLoggerService } from 'src/loggers/services/console-logger/console-logger.service';
 import { ContestantsService } from '../../contestants/services/contestants.service';
 import { VotesService } from '../../votes/services/votes.service';
 
 @Injectable()
 export class RacesService {
   constructor(
+    private readonly _CONSOLE_LOGGER_SERVICE: ConsoleLoggerService,
     private readonly _CONTESTANTS_SERVICE: ContestantsService,
     @InjectRepository(RaceEntity)
     private readonly _RACES_REPOSITORY: Repository<RaceEntity>,
@@ -31,6 +33,8 @@ export class RacesService {
 
   async getCurrentRace(): Promise<RaceDto | IErrorResponseMessage> {
     try {
+      this._CONSOLE_LOGGER_SERVICE.verbose('Getting current race...');
+
       const race: RaceEntity = await this._RACES_REPOSITORY.findOne({
         where: { active: parseInt('1') }
       });
@@ -40,6 +44,10 @@ export class RacesService {
           await this._VOTES_SERVICE.getVotesTotalByRaceId(race.raceId);
 
         if (votesTotal instanceof Array && votesTotal.length === 2) {
+          this._CONSOLE_LOGGER_SERVICE.verbose(
+            'Votes total found. Creating response...'
+          );
+
           let contestants: ContestantEntity[] = [];
           let raceDto: RaceDto = null;
 
@@ -77,8 +85,16 @@ export class RacesService {
             race.active ? true : false
           );
 
+          this._CONSOLE_LOGGER_SERVICE.log(
+            'Current race retrieved. Returning information...'
+          );
+
           return raceDto;
         }
+
+        this._CONSOLE_LOGGER_SERVICE.error(
+          'Not necessary amount of total votes was found'
+        );
 
         throw new NotFoundException({
           error: 'NoAmountEnough',
@@ -86,11 +102,16 @@ export class RacesService {
         });
       }
 
+      this._CONSOLE_LOGGER_SERVICE.error('No current race was found');
+
       throw new NotFoundException({
         error: 'NoActiveRace',
         message: 'No active-race was found'
       });
     } catch (error) {
+      this._CONSOLE_LOGGER_SERVICE.error(
+        `Error getting the current race: ${error}`
+      );
       throw new InternalServerErrorException({
         error: error.name,
         message: error.message
@@ -100,6 +121,8 @@ export class RacesService {
 
   async getRaceList(): Promise<RaceDto[] | IErrorResponseMessage> {
     try {
+      this._CONSOLE_LOGGER_SERVICE.verbose('Getting race list...');
+
       const races: RaceEntity[] = await this._RACES_REPOSITORY.find();
       const raceList: RaceDto[] = [];
 
@@ -109,6 +132,10 @@ export class RacesService {
             await this._VOTES_SERVICE.getVotesTotalByRaceId(raceEntity.raceId);
 
           if (votesTotal instanceof Array && votesTotal.length === 2) {
+            this._CONSOLE_LOGGER_SERVICE.verbose(
+              'Votes total found. Creating response...'
+            );
+
             let contestants: ContestantEntity[] = [];
 
             const contestantIds: number[] = [];
@@ -147,11 +174,28 @@ export class RacesService {
               active: raceEntity.active ? true : false
             });
           }
+
+          this._CONSOLE_LOGGER_SERVICE.error(
+            'Not necessary amount of total votes was found'
+          );
+
+          throw new NotFoundException({
+            error: 'NoAmountEnough',
+            message: 'Not necessary amount of votesTotal was found'
+          });
         })
+      );
+
+      this._CONSOLE_LOGGER_SERVICE.log(
+        'Race list retrieved. Returning information...'
       );
 
       return raceList;
     } catch (error) {
+      this._CONSOLE_LOGGER_SERVICE.error(
+        `Error getting the race list: ${error}`
+      );
+
       throw new InternalServerErrorException({
         error: error.name,
         message: error.message
