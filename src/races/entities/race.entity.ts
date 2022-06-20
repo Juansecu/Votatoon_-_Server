@@ -6,7 +6,7 @@ import {
   UpdateDateColumn
 } from 'typeorm';
 
-@Entity('Races')
+@Entity('races')
 export class RaceEntity {
   @PrimaryGeneratedColumn('increment', { name: 'Race_id', unsigned: true })
   raceId: number;

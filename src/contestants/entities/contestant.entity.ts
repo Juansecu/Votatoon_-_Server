@@ -6,7 +6,7 @@ import {
   UpdateDateColumn
 } from 'typeorm';
 
-@Entity('Contestants')
+@Entity('contestants')
 export class ContestantEntity {
   @PrimaryColumn({
     name: 'Contestant_id',

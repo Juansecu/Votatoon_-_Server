@@ -13,7 +13,7 @@ import { EContestantType } from '../../contestants/enums/Contestant';
 import { RaceEntity } from '../../races/entities/race.entity';
 import { ContestantEntity } from '../../contestants/entities/contestant.entity';
 
-@Entity('Votes_total')
+@Entity('votes_total')
 export class VoteTotalEntity {
   @PrimaryGeneratedColumn('increment', {
     name: 'Vote_total_id',
