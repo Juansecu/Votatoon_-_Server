@@ -1,4 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn
+} from 'typeorm';
 
 @Entity('Races')
 export class RaceEntity {
@@ -6,11 +12,12 @@ export class RaceEntity {
   raceId: number;
   @Column('tinyint', { name: 'Active', nullable: false, unsigned: true })
   active: boolean;
-  @Column('datetime', {
-    default: () => 'CURRENT_TIMESTAMP',
-    name: 'Created_at',
-    nullable: true
+  @CreateDateColumn({
+    name: 'Created_at'
   })
   createdAt: Date;
-  @Column('datetime', { name: 'Updated_at', nullable: true }) updateAt: Date;
+  @UpdateDateColumn({
+    name: 'Updated_at'
+  })
+  updateAt: Date;
 }

@@ -1,8 +1,14 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryColumn,
+  UpdateDateColumn
+} from 'typeorm';
 
 @Entity('Contestants')
 export class ContestantEntity {
-  @PrimaryGeneratedColumn('increment', {
+  @PrimaryColumn({
     name: 'Contestant_id',
     unsigned: true
   })
@@ -15,22 +21,25 @@ export class ContestantEntity {
   })
   name: string;
   @Column('varchar', {
+    length: 125,
     name: 'Small_image_path',
     nullable: false,
     unique: true
   })
   smallImagePath: string;
   @Column('varchar', {
+    length: 125,
     name: 'Large_image_path',
     nullable: false,
     unique: true
   })
   largeImagePath: string;
-  @Column('datetime', {
-    default: () => 'CURRENT_TIMESTAMP',
-    name: 'Added_at',
-    nullable: true
+  @CreateDateColumn({
+    name: 'Added_at'
   })
   addedAt: Date;
-  @Column('datetime', { name: 'Updated_at', nullable: true }) updatedAt: Date;
+  @UpdateDateColumn({
+    name: 'Updated_at'
+  })
+  updatedAt: Date;
 }

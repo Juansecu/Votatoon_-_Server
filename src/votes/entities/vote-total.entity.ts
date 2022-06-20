@@ -1,6 +1,17 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn
+} from 'typeorm';
 
-import { EContestantType } from 'src/contestants/enums/Contestant';
+import { EContestantType } from '../../contestants/enums/Contestant';
+
+import { RaceEntity } from '../../races/entities/race.entity';
+import { ContestantEntity } from '../../contestants/entities/contestant.entity';
 
 @Entity('Votes_total')
 export class VoteTotalEntity {
@@ -21,15 +32,36 @@ export class VoteTotalEntity {
     nullable: false
   })
   contestantType: EContestantType;
-  @Column('int', { name: 'Contestant_id', nullable: false, unsigned: true })
+  @JoinColumn({
+    name: 'Contestant_id',
+    referencedColumnName: 'contestantId'
+  })
+  @OneToMany(
+    () => ContestantEntity,
+    (contestant: ContestantEntity) => contestant.contestantId,
+    {
+      nullable: false,
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE'
+    }
+  )
   contestantId: number;
-  @Column('int', { name: 'Race_id', nullable: false, unsigned: true })
+  @JoinColumn({
+    name: 'Race_id',
+    referencedColumnName: 'raceId'
+  })
+  @OneToMany(() => RaceEntity, (race: RaceEntity) => race.raceId, {
+    nullable: false,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE'
+  })
   raceId: number;
-  @Column('datetime', {
-    default: () => 'CURRENT_TIMESTAMP',
-    name: 'Created_at',
-    nullable: true
+  @CreateDateColumn({
+    name: 'Created_at'
   })
   createdAt: Date;
-  @Column('datetime', { name: 'Updated_at', nullable: true }) updatedAt: Date;
+  @UpdateDateColumn({
+    name: 'Updated_at'
+  })
+  updatedAt: Date;
 }
