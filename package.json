@@ -4,7 +4,7 @@
   "description": "API for Votatoon",
   "author": "Juansecu",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git@github.com:Juansecu/votatoon-server.git"
