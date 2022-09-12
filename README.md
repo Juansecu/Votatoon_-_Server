@@ -1,8 +1,6 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
-</p>
+# Votatoon API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
+<!--[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
 [circleci-url]: https://circleci.com/gh/nestjs/nest
 
   <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
@@ -24,12 +22,64 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Open-source web API for Votatoon client.
+
+## Requirements
+
+### Environment variables
+
+In order for setting up the Votatoon API, you will need to set up the following environment variables:
+
+- **DATABASE_HOST -** The host where the database server is running
+- **DATABASE_NAME -** The name of the database to connect to
+- **DATABASE_PASSWORD -** The password of the user who owns the database
+- **DATABASE_PORT -** The port where the database server is running
+- **DATABASE_USERNAME -** The name of the user who owns the database
+
+Note that you can set up the environment variables by setting them in a `.env` file stored at same location than `package.json` file, or by setting them for your Operating System internal use.
+
+#### Setting environment variables using `.env` file
+
+After cloning or downloading the source code of this project, you must create a file called `.env` in the root folder of the application, where you will set the environment variables using key-value pairs.
+
+F.E: To define environment variables for getting the connection to the database, you will use this template _(without `{{}}`)_:
+
+```properties
+DATABASE_HOST={{Database host}}
+DATABASE_NAME={{Database name}}
+DATABASE_PASSWORD={{Database password}}
+DATABASE_PORT={{Database port}}
+DATABASE_USERNAME={{Database username}}
+```
+
+#### Setting environment variables in your Operating System
+
+- **Windows:**
+
+  1. Open `Settings > System > About > Advanced system settings > Environment Variables`.
+  2. Now, you can decide whether defining environment variables for specific users or for the entire Operating System. My personal suggestion is to define them for specific users.
+  3. Click `New...` button.
+  4. Type variable name and value.
+
+  You have to follow steps **3** and **4** per environment variable.
+
+- **Linux:**
+
+  Before starting, you must know that you can use the `export` command to set environment variables on Linux, but they may not be available after you leave your current session, so maybe you will want to set the environment variables using `.(bash/zsh)_profile` file.
+
+  1. In order to set the environment variables, you have to use the `export` command followed by the key-value pair (like `.env` file). F.E To set `DATABASE_NAME` environment variable, you must use the command `export DATABASE_NAME={{Database name}}` _(without `{{}}`)_.
+  2. If you used `.(bash/zsh)_profile` to set the environment variables, you have to use the command `source path/to/profile/file/.(bash/zsh)_profile`, so your current session in the terminal will be updated with the new set environment variables.
+
+  For more information about setting environment variables on Linux, you can check out [this tutorial](https://www.serverlab.ca/tutorials/linux/administration-linux/how-to-set-environment-variables-in-linux/).
 
 ## Installation
 
 ```bash
+# development
 $ npm install
+
+# production mode
+$ npm install --prod
 ```
 
 ## Running the app
@@ -58,16 +108,6 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
 ## License
 
-Nest is [MIT licensed](LICENSE).
+This project is [MIT licensed](LICENSE).
