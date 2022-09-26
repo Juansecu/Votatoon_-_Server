@@ -32,6 +32,11 @@ export class VoteTotalEntity {
     nullable: false
   })
   contestantType: EContestantType;
+  @Column('int', {
+    name: 'Contestant_id',
+    nullable: false,
+    unsigned: true
+  })
   @JoinColumn({
     name: 'Contestant_id',
     referencedColumnName: 'contestantId'
@@ -46,6 +51,11 @@ export class VoteTotalEntity {
     }
   )
   contestantId: number;
+  @Column('int', {
+    name: 'Race_id',
+    nullable: false,
+    unsigned: true
+  })
   @JoinColumn({
     name: 'Race_id',
     referencedColumnName: 'raceId'
