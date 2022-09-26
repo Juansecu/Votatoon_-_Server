@@ -1,4 +1,4 @@
-export interface Contestant {
+export interface IContestant {
   contestantId: number;
   name: string;
   smallImagePath: string;

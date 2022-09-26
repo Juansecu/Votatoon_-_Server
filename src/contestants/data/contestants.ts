@@ -1,6 +1,6 @@
-import { Contestant } from '../typings/Contestant';
+import { IContestant } from '../typings/Contestant';
 
-export const contestants: Contestant[] = [
+export const contestants: IContestant[] = [
   {
     contestantId: 2,
     name: 'Un Show Más',
