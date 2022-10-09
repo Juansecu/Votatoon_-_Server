@@ -72,6 +72,12 @@ DATABASE_USERNAME={{Database username}}
 
   For more information about setting environment variables on Linux, you can check out [this tutorial](https://www.serverlab.ca/tutorials/linux/administration-linux/how-to-set-environment-variables-in-linux/).
 
+### Available port
+
+This application needs port **3000** by default for running on, but if you want to use a different port, you can set it by setting the environment variable `PORT`.
+
+Note that this behavior allows you to deploy your own instance using a VPS/PaaS like Heroku or Digital Ocean.
+
 ## Installation
 
 ```bash
