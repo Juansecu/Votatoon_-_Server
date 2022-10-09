@@ -7,8 +7,6 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { IErrorResponseMessage } from '../../shared/typings/ErrorResponseMessage';
-
 import { RaceDto } from '../dtos/Race.dto';
 
 import { RaceInformationEntity } from '../entities/race-information.entity';
@@ -23,7 +21,7 @@ export class RacesService {
     private readonly _V_RACES_INFORMATION_REPOSITORY: Repository<RaceInformationEntity>
   ) {}
 
-  async getCurrentRace(): Promise<RaceDto | IErrorResponseMessage> {
+  async getCurrentRace(): Promise<RaceDto> {
     try {
       this._CONSOLE_LOGGER_SERVICE.verbose('Getting current race...');
 
@@ -65,7 +63,7 @@ export class RacesService {
     }
   }
 
-  async getRaceList(): Promise<RaceDto[] | IErrorResponseMessage> {
+  async getRaceList(): Promise<RaceDto[]> {
     try {
       this._CONSOLE_LOGGER_SERVICE.verbose('Getting race list...');
 

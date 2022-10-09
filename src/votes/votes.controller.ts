@@ -1,6 +1,5 @@
 import { Controller, Get, Param } from '@nestjs/common';
 
-import { IErrorResponseMessage } from '../shared/typings/ErrorResponseMessage';
 import { ISuccessResponseMessage } from '../shared/typings/SuccessResponseMessage';
 
 import { EContestantType } from '../contestants/enums/Contestant';
@@ -14,7 +13,7 @@ export class VotesController {
   @Get('vote/:contestant')
   async vote(
     @Param('contestant') contestantType: EContestantType
-  ): Promise<ISuccessResponseMessage | IErrorResponseMessage> {
+  ): Promise<ISuccessResponseMessage> {
     return this._VOTES_SERVICE.vote(contestantType);
   }
 }
