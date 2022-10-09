@@ -5,11 +5,7 @@ import { LoggersModule } from '../loggers/loggers.module';
 
 import { ContestantEntity } from './entities/contestant.entity';
 
-import { ContestantsService } from './services/contestants.service';
-
 @Module({
-  imports: [TypeOrmModule.forFeature([ContestantEntity]), LoggersModule],
-  providers: [ContestantsService],
-  exports: [ContestantsService]
+  imports: [TypeOrmModule.forFeature([ContestantEntity]), LoggersModule]
 })
 export class ContestantsModule {}

@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { ContestantsModule } from '../contestants/contestants.module';
 import { LoggersModule } from '../loggers/loggers.module';
-import { VotesModule } from '../votes/votes.module';
 
 import { RaceEntity } from './entities/race.entity';
+import { RaceInformationEntity } from './entities/race-information.entity';
 
 import { RacesController } from './races.controller';
 
@@ -13,10 +12,8 @@ import { RacesService } from './services/races.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([RaceEntity]),
-    ContestantsModule,
-    LoggersModule,
-    VotesModule
+    TypeOrmModule.forFeature([RaceEntity, RaceInformationEntity]),
+    LoggersModule
   ],
   controllers: [RacesController],
   providers: [RacesService],
