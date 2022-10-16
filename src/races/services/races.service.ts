@@ -21,6 +21,14 @@ export class RacesService {
     private readonly _V_RACES_INFORMATION_REPOSITORY: Repository<RaceInformationEntity>
   ) {}
 
+  /**
+   * Gets the current active race.
+   *
+   * @throws `InternalServerErrorException` if there is an unexpected exception when trying to get the current race from the database
+   * @throws `NotFoundException` if there are no records for a current active race
+   * @throws `NotFoundException` if not-enough records (2) were found for the current race
+   * @returns `Promise<RaceDto>`
+   */
   async getCurrentRace(): Promise<RaceDto> {
     try {
       this._CONSOLE_LOGGER_SERVICE.verbose('Getting current race...');
@@ -34,7 +42,9 @@ export class RacesService {
 
       if (currentRaceInformation.length) {
         if (currentRaceInformation.length !== 2)
-          this.throwNoRaceAmountEnoughException();
+          this.throwNoRaceAmountEnoughException(
+            currentRaceInformation[0].raceId
+          );
 
         this._CONSOLE_LOGGER_SERVICE.log(
           'Race information retrieved. Returning information...'
@@ -63,6 +73,14 @@ export class RacesService {
     }
   }
 
+  /**
+   * Gets the information of the last two races.
+   *
+   * @throws `InternalServerErrorException` if there is an unexpected exception when trying to get the races from the database
+   * @throws `NotFoundException` if there are no records for any of the current races
+   * @throws `NotFoundException` if not-enough records (2) were found for any of the current races
+   * @returns `Promise<RaceDto[]>`
+   */
   async getRaceList(): Promise<RaceDto[]> {
     try {
       this._CONSOLE_LOGGER_SERVICE.verbose('Getting race list...');
@@ -86,7 +104,8 @@ export class RacesService {
           race => race.raceId === raceId
         );
 
-        if (filteredRaces.length !== 2) this.throwNoRaceAmountEnoughException();
+        if (filteredRaces.length !== 2)
+          this.throwNoRaceAmountEnoughException(raceId);
 
         races.push(filteredRaces);
       }
@@ -123,6 +142,13 @@ export class RacesService {
     }
   }
 
+  /**
+   * Creates the response for the given race information.
+   *
+   * @param raceInformation Votes for contestants **a** and **b**
+   * @param index Index for the current race information. It's **0** by default
+   * @returns `RaceDto`
+   */
   private createRaceInformationResponse(
     raceInformation: RaceInformationEntity[],
     index = 0
@@ -154,9 +180,15 @@ export class RacesService {
     };
   }
 
-  private throwNoRaceAmountEnoughException(): void {
+  /**
+   * Throws `NotFoundException` indicating that the current amount of total votes was not found.
+   *
+   * @param raceId Id of the race from which the total votes was not found
+   * @throws `NotFoundException` indicating that the current amount of total votes was not found.
+   */
+  private throwNoRaceAmountEnoughException(raceId: number): void {
     this._CONSOLE_LOGGER_SERVICE.error(
-      'Not necessary amount of total votes was found'
+      `Not necessary amount of total votes was found for the race with ID ${raceId}`
     );
 
     throw new NotFoundException({
