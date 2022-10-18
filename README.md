@@ -35,6 +35,10 @@ In order for setting up the Votatoon API, you will need to set up the following 
 - **DATABASE_PASSWORD -** The password of the user who owns the database
 - **DATABASE_PORT -** The port where the database server is running
 - **DATABASE_USERNAME -** The name of the user who owns the database
+- **INIT_VECTOR -** The initial vector that is used to encrypt/decrypt IP addresses from the clients
+- **SECURITY_KEY -** The security key that is used to encrypt/decrypt IP addresses from the clients
+
+**Note:** You can generate values for `INIT_VECTOR` and `SECURITY_KEY` environment variables dynamically by accessing the endpoint `/generate-crypto-info` using your web browser. Once you set the values of the environment variables, you will need to create another session in your terminal in order to allow the application to access the new environment variables.
 
 Note that you can set up the environment variables by setting them in a `.env` file stored at same location than `package.json` file, or by setting them for your Operating System internal use.
 
@@ -50,6 +54,8 @@ DATABASE_NAME={{Database name}}
 DATABASE_PASSWORD={{Database password}}
 DATABASE_PORT={{Database port}}
 DATABASE_USERNAME={{Database username}}
+INIT_VECTOR={{Initial vector}}
+SECURITY_KEY={{Security key}}
 ```
 
 #### Setting environment variables in your Operating System

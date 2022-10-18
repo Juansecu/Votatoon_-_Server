@@ -1,4 +1,5 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Req } from '@nestjs/common';
+import { Request } from 'express';
 
 import { ISuccessResponseMessage } from '../shared/typings/SuccessResponseMessage';
 
@@ -10,10 +11,11 @@ import { VotesService } from './services/votes.service';
 export class VotesController {
   constructor(private readonly _VOTES_SERVICE: VotesService) {}
 
-  @Get('vote/:contestant')
-  async vote(
-    @Param('contestant') contestantType: EContestantType
-  ): Promise<ISuccessResponseMessage> {
-    return this._VOTES_SERVICE.vote(contestantType);
+  @Get('vote/a|b')
+  async vote(@Req() request: Request): Promise<ISuccessResponseMessage> {
+    return await this._VOTES_SERVICE.vote(
+      request.url.charAt(request.url.length - 1) as EContestantType,
+      request
+    );
   }
 }
