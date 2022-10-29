@@ -7,9 +7,10 @@ import {
   UpdateDateColumn
 } from 'typeorm';
 
-import { VoteTotalEntity } from './vote-total.entity';
 import { ClientEntity } from '../../clients/entities/client.entity';
+import { ContestantEntity } from '../../contestants/entities/contestant.entity';
 import { RaceEntity } from '../../races/entities/race.entity';
+import { RaceContestantEntity } from '../../races/entities/race-contestant.entity';
 
 @Entity('client_votes')
 export class ClientVoteEntity {
@@ -19,7 +20,8 @@ export class ClientVoteEntity {
   })
   clientVoteId: number;
   @JoinColumn({
-    name: 'Race_id'
+    name: 'Race_id',
+    referencedColumnName: 'raceId'
   })
   @ManyToOne(() => RaceEntity, race => race.raceId, {
     cascade: true,
@@ -27,21 +29,36 @@ export class ClientVoteEntity {
   })
   raceId: number;
   @JoinColumn({
-    name: 'Vote_total_id'
+    name: 'Contestant_id',
+    referencedColumnName: 'contestantId'
   })
   @ManyToOne(
-    () => VoteTotalEntity,
-    (voteTotal: VoteTotalEntity) => voteTotal.voteTotalId,
+    () => ContestantEntity,
+    (contestant: ContestantEntity) => contestant.contestantId,
     {
       cascade: true,
       nullable: false
     }
   )
-  voteTotalId: number;
+  contestantId: number;
   @JoinColumn({
-    name: 'Client_id'
+    name: 'Race_contestant_id',
+    referencedColumnName: 'raceContestantId'
   })
-  @ManyToOne(() => ClientEntity, client => client.clientId, {
+  @ManyToOne(
+    () => RaceContestantEntity,
+    (raceContestant: RaceContestantEntity) => raceContestant.raceContestantId,
+    {
+      cascade: true,
+      nullable: false
+    }
+  )
+  raceContestantId: number;
+  @JoinColumn({
+    name: 'Client_id',
+    referencedColumnName: 'clientId'
+  })
+  @ManyToOne(() => ClientEntity, (client: ClientEntity) => client.clientId, {
     cascade: true,
     nullable: false
   })

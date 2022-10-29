@@ -1,14 +1,16 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ClientsModule } from '../clients/clients.module';
 import { LoggersModule } from '../loggers/loggers.module';
-import { RacesModule } from '../races/races.module';
 import { SharedModule } from '../shared/shared.module';
 
 import { ClientVoteEntity } from './entities/client-vote.entity';
-import { CurrentVoteEntity } from './entities/current-vote.entity';
-import { VoteTotalEntity } from './entities/vote-total.entity';
+import { ContestantVoteEntity } from './entities/contestant-vote.entity';
+import { VoteEntity } from './entities/vote.entity';
+
+import { ClientDataRetrievingMiddleware } from '../clients/middlewares/client-data-retrieving.middleware';
+import { CryptographicCredentialsValidationMiddleware } from '../shared/middlewares/cryptographic-credentials-validation.middleware';
 
 import { VotesController } from './votes.controller';
 
@@ -18,16 +20,24 @@ import { VotesService } from './services/votes.service';
   imports: [
     TypeOrmModule.forFeature([
       ClientVoteEntity,
-      CurrentVoteEntity,
-      VoteTotalEntity
+      ContestantVoteEntity,
+      VoteEntity
     ]),
     ClientsModule,
     LoggersModule,
-    RacesModule,
     SharedModule
   ],
   controllers: [VotesController],
   providers: [VotesService],
   exports: [VotesService]
 })
-export class VotesModule {}
+export class VotesModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(
+        CryptographicCredentialsValidationMiddleware,
+        ClientDataRetrievingMiddleware
+      )
+      .forRoutes('votes/vote/a|b');
+  }
+}

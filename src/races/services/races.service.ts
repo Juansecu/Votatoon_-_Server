@@ -4,21 +4,19 @@ import {
   InternalServerErrorException,
   NotFoundException
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+
+import { ContestantVoteEntity } from '../../votes/entities/contestant-vote.entity';
 
 import { RaceDto } from '../dtos/Race.dto';
 
-import { RaceInformationEntity } from '../entities/race-information.entity';
-
 import { ConsoleLoggerService } from '../../loggers/services/console-logger/console-logger.service';
+import { VotesService } from '../../votes/services/votes.service';
 
 @Injectable()
 export class RacesService {
   constructor(
     private readonly _CONSOLE_LOGGER_SERVICE: ConsoleLoggerService,
-    @InjectRepository(RaceInformationEntity)
-    private readonly _V_RACES_INFORMATION_REPOSITORY: Repository<RaceInformationEntity>
+    private readonly _VOTES_SERVICE: VotesService
   ) {}
 
   /**
@@ -26,25 +24,24 @@ export class RacesService {
    *
    * @throws `InternalServerErrorException` if there is an unexpected exception when trying to get the current race from the database
    * @throws `NotFoundException` if there are no records for a current active race
-   * @throws `NotFoundException` if not-enough records (2) were found for the current race
    * @returns `Promise<RaceDto>`
    */
   async getCurrentRace(): Promise<RaceDto> {
     try {
       this._CONSOLE_LOGGER_SERVICE.verbose('Getting current race...');
 
-      const currentRaceInformation: RaceInformationEntity[] =
-        await this._V_RACES_INFORMATION_REPOSITORY.find({
-          where: {
-            active: 1
-          }
-        });
+      const currentRaceInformation: [
+        ContestantVoteEntity,
+        ContestantVoteEntity
+      ] = (await this._VOTES_SERVICE.getContestantVotes({
+        active: 1
+      })) as [ContestantVoteEntity, ContestantVoteEntity];
 
       if (currentRaceInformation.length) {
-        if (currentRaceInformation.length !== 2)
-          this.throwNoRaceAmountEnoughException(
-            currentRaceInformation[0].raceId
-          );
+        this._VOTES_SERVICE.checkRaceContestantVotesRecords(
+          currentRaceInformation,
+          currentRaceInformation[0].raceId
+        );
 
         this._CONSOLE_LOGGER_SERVICE.log(
           'Race information retrieved. Returning information...'
@@ -76,9 +73,7 @@ export class RacesService {
   /**
    * Gets the information of the last two races.
    *
-   * @throws `InternalServerErrorException` if there is an unexpected exception when trying to get the races from the database
-   * @throws `NotFoundException` if there are no records for any of the current races
-   * @throws `NotFoundException` if not-enough records (2) were found for any of the current races
+   * @throws `InternalServerErrorException` when there is an unexpected exception while trying to get the races from the database
    * @returns `Promise<RaceDto[]>`
    */
   async getRaceList(): Promise<RaceDto[]> {
@@ -86,32 +81,39 @@ export class RacesService {
       this._CONSOLE_LOGGER_SERVICE.verbose('Getting race list...');
 
       const raceIds: Set<number> = new Set();
-      const races: RaceInformationEntity[][] = [];
-      const racesInformation: RaceInformationEntity[] =
-        await this._V_RACES_INFORMATION_REPOSITORY.find({
-          order: {
+      const races: [ContestantVoteEntity, ContestantVoteEntity][] = [];
+      const raceList: RaceDto[] = [];
+      const racesInformation: ContestantVoteEntity[] =
+        await this._VOTES_SERVICE.getContestantVotes(
+          {},
+          {
             raceId: 'DESC'
           },
-          take: 4
-        });
-      const raceList: RaceDto[] = [];
+          4
+        );
 
       for (const raceInformation of racesInformation)
         raceIds.add(raceInformation.raceId);
 
       for (const raceId of raceIds.values()) {
-        const filteredRaces: RaceInformationEntity[] = racesInformation.filter(
-          race => race.raceId === raceId
-        );
+        const filteredRaces: [ContestantVoteEntity, ContestantVoteEntity] =
+          racesInformation.filter(race => race.raceId === raceId) as [
+            ContestantVoteEntity,
+            ContestantVoteEntity
+          ];
 
-        if (filteredRaces.length !== 2)
-          this.throwNoRaceAmountEnoughException(raceId);
+        filteredRaces.sort((a, b) => a.raceContestantId - b.raceContestantId);
+
+        this._VOTES_SERVICE.checkRaceContestantVotesRecords(
+          filteredRaces,
+          raceId
+        );
 
         races.push(filteredRaces);
       }
 
       races.sort(
-        (a: RaceInformationEntity[], b: RaceInformationEntity[]) =>
+        (a: ContestantVoteEntity[], b: ContestantVoteEntity[]) =>
           a[0].raceId - b[0].raceId
       );
 
@@ -129,11 +131,11 @@ export class RacesService {
 
       return raceList;
     } catch (error) {
+      if (error instanceof HttpException) throw error;
+
       this._CONSOLE_LOGGER_SERVICE.error(
         `Error getting the race list: ${error}`
       );
-
-      if (error instanceof HttpException) throw error;
 
       throw new InternalServerErrorException({
         error: error.name,
@@ -150,50 +152,37 @@ export class RacesService {
    * @returns `RaceDto`
    */
   private createRaceInformationResponse(
-    raceInformation: RaceInformationEntity[],
+    raceInformation: [ContestantVoteEntity, ContestantVoteEntity],
     index = 0
   ): RaceDto {
+    const contestantA: ContestantVoteEntity = raceInformation[0];
+    const contestantB: ContestantVoteEntity = raceInformation[1];
+
+    contestantA.voteTotalValue = Number(contestantA.voteTotalValue);
+    contestantB.voteTotalValue = Number(contestantB.voteTotalValue);
+
     return {
-      id: raceInformation[0].raceId,
+      id: contestantA.raceId,
       index: index,
-      toonA: raceInformation[0].name,
-      toonB: raceInformation[1].name,
+      toonA: contestantA.name,
+      toonB: contestantB.name,
       aVotesPercent: Math.round(
-        (raceInformation[0].voteTotalValue /
-          (raceInformation[0].voteTotalValue +
-            raceInformation[1].voteTotalValue)) *
+        (contestantA.voteTotalValue /
+          (contestantA.voteTotalValue + contestantB.voteTotalValue)) *
           100
       ),
       bVotesPercent: Math.round(
-        (raceInformation[1].voteTotalValue /
-          (raceInformation[0].voteTotalValue +
-            raceInformation[1].voteTotalValue)) *
+        (contestantB.voteTotalValue /
+          (contestantA.voteTotalValue + contestantB.voteTotalValue)) *
           100
       ),
-      aVotesTotal: raceInformation[0].voteTotalValue,
-      bVotesTotal: raceInformation[1].voteTotalValue,
-      aSmallImagePath: raceInformation[0].smallImagePath,
-      bSmallImagePath: raceInformation[1].smallImagePath,
-      aLargeImagePath: raceInformation[0].largeImagePath,
-      bLargeImagePath: raceInformation[1].largeImagePath,
-      active: raceInformation[0].active ? true : false
+      aVotesTotal: contestantA.voteTotalValue,
+      bVotesTotal: contestantB.voteTotalValue,
+      aSmallImagePath: contestantA.smallImagePath,
+      bSmallImagePath: contestantB.smallImagePath,
+      aLargeImagePath: contestantA.largeImagePath,
+      bLargeImagePath: contestantB.largeImagePath,
+      active: contestantA.active ? true : false
     };
-  }
-
-  /**
-   * Throws `NotFoundException` indicating that the current amount of total votes was not found.
-   *
-   * @param raceId Id of the race from which the total votes was not found
-   * @throws `NotFoundException` indicating that the current amount of total votes was not found.
-   */
-  private throwNoRaceAmountEnoughException(raceId: number): void {
-    this._CONSOLE_LOGGER_SERVICE.error(
-      `Not necessary amount of total votes was found for the race with ID ${raceId}`
-    );
-
-    throw new NotFoundException({
-      error: 'NoAmountEnough',
-      message: 'Not necessary amount of votesTotal was found'
-    });
   }
 }
