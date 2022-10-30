@@ -2,10 +2,10 @@ import { Connection, ViewColumn, ViewEntity } from 'typeorm';
 
 import { EContestantType } from '../../contestants/enums/Contestant';
 
+import { ClientVoteEntity } from './client-vote.entity';
+import { ContestantEntity } from '../../contestants/entities/contestant.entity';
 import { RaceEntity } from '../../races/entities/race.entity';
 import { RaceContestantEntity } from '../../races/entities/race-contestant.entity';
-import { ContestantEntity } from '../../contestants/entities/contestant.entity';
-import { ClientVoteEntity } from './client-vote.entity';
 
 @ViewEntity('v_contestant_votes', {
   expression: (connection: Connection) =>
@@ -20,15 +20,15 @@ import { ClientVoteEntity } from './client-vote.entity';
       .addSelect('r.Race_id', 'Race_id')
       .addSelect('r.Active', 'Active')
       .addSelect('COUNT(cv.Race_contestant_id)', 'Vote_total_value')
-      .addFrom(ClientVoteEntity, 'cv')
-      .innerJoin(ContestantEntity, 'c', 'cv.Contestant_id = c.Contestant_id')
-      .innerJoin(RaceEntity, 'r', 'cv.Race_id = r.Race_id')
-      .innerJoin(
-        RaceContestantEntity,
-        'rc',
-        'cv.Race_contestant_id = rc.Race_contestant_id'
+      .addFrom(RaceContestantEntity, 'rc')
+      .innerJoin(ContestantEntity, 'c', 'rc.Contestant_id = c.Contestant_id')
+      .innerJoin(RaceEntity, 'r', 'rc.Race_id = r.Race_id')
+      .leftJoin(
+        ClientVoteEntity,
+        'cv',
+        'rc.Race_contestant_id = cv.Race_contestant_id'
       )
-      .groupBy('cv.Race_contestant_id')
+      .groupBy('rc.Race_contestant_id')
 })
 export class ContestantVoteEntity {
   @ViewColumn({ name: 'Race_contestant_id' })

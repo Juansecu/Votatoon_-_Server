@@ -119,7 +119,8 @@ export class RacesService {
 
       for (let i = 0; i < races.length; i++) {
         const raceInformation: RaceDto = this.createRaceInformationResponse(
-          races[i]
+          races[i],
+          i
         );
 
         raceList.push(raceInformation);
