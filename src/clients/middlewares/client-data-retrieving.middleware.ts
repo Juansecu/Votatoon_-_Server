@@ -16,6 +16,8 @@ import { ConsoleLoggerService } from '../../loggers/services/console-logger/cons
 
 import { CryptoUtil } from '../../shared/utils/crypto.util';
 
+import { setValue } from 'src/shared/functions/setValue.function';
+
 @Injectable()
 export class ClientDataRetrievingMiddleware implements NestMiddleware {
   constructor(
@@ -50,7 +52,7 @@ export class ClientDataRetrievingMiddleware implements NestMiddleware {
         encryptedIpAddress
       );
 
-      request.data.client = client;
+      setValue(request, 'data.client', client);
 
       next();
     } catch (error) {
@@ -61,9 +63,7 @@ export class ClientDataRetrievingMiddleware implements NestMiddleware {
 
         client = await this._CLIENTS_SERVICE.addClient(encryptedIpAddress);
 
-        request.data.client = client;
-
-        Object.freeze(request.data.client);
+        setValue(request, 'data.client', client);
 
         next();
 
