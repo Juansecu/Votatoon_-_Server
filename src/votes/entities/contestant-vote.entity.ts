@@ -1,6 +1,6 @@
 import { Connection, ViewColumn, ViewEntity } from 'typeorm';
 
-import { EContestantType } from '../../contestants/enums/Contestant';
+import { EContestantType } from '../../contestants/enums/contestant-type.enum';
 
 import { ClientVoteEntity } from './client-vote.entity';
 import { ContestantEntity } from '../../contestants/entities/contestant.entity';

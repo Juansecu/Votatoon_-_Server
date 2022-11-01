@@ -12,7 +12,7 @@ import { IRequestClientData } from '../../clients/typings/Request';
 import { ISuccessResponseMessage } from '../../shared/typings/SuccessResponseMessage';
 import { TOrderByClause, TWhereClause } from '../../shared/typings/TypeORM';
 
-import { EContestantType } from '../../contestants/enums/Contestant';
+import { EContestantType } from '../../contestants/enums/contestant-type.enum';
 
 import { ClientVoteEntity } from '../entities/client-vote.entity';
 import { ContestantVoteEntity } from '../entities/contestant-vote.entity';

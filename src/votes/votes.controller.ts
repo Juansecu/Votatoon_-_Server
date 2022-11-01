@@ -3,7 +3,7 @@ import { Controller, Get, HttpCode, Post, Req } from '@nestjs/common';
 import { IRequestClientData } from '../clients/typings/Request';
 import { ISuccessResponseMessage } from '../shared/typings/SuccessResponseMessage';
 
-import { EContestantType } from '../contestants/enums/Contestant';
+import { EContestantType } from '../contestants/enums/contestant-type.enum';
 
 import { VotesService } from './services/votes.service';
 
