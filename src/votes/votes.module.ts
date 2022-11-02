@@ -1,4 +1,9 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod
+} from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ClientsModule } from '../clients/clients.module';
@@ -38,6 +43,9 @@ export class VotesModule implements NestModule {
         CryptographicCredentialsValidationMiddleware,
         ClientDataRetrievingMiddleware
       )
-      .forRoutes('votes/vote/a|b');
+      .forRoutes(
+        { path: 'votes/vote/a|b', method: RequestMethod.GET },
+        { path: 'votes/vote/a|b', method: RequestMethod.POST }
+      );
   }
 }

@@ -1,10 +1,4 @@
-import {
-  ConflictException,
-  HttpException,
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException
-} from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -13,6 +7,11 @@ import { ISuccessResponseMessage } from '../../shared/typings/SuccessResponseMes
 import { TOrderByClause, TWhereClause } from '../../shared/typings/TypeORM';
 
 import { EContestantType } from '../../contestants/enums/contestant-type.enum';
+import { EErrorCode } from '../../core/enums/error-code.enum';
+
+import { VotatoonConflictException } from '../../core/exceptions/votatoon-conflict.exception';
+import { VotatoonInternalServerErrorException } from '../../core/exceptions/votatoon-internal-server-error.exception';
+import { VotatoonNotFoundException } from '../../core/exceptions/votatoon-not-found.exception';
 
 import { ClientVoteEntity } from '../entities/client-vote.entity';
 import { ContestantVoteEntity } from '../entities/contestant-vote.entity';
@@ -46,7 +45,7 @@ export class VotesService {
    *
    * @param raceInformationRecords The records to validate
    * @param raceId Id of the race to validate
-   * @throws `NotFoundException` when the records are invalid
+   * @throws `VotatoonNotFoundException` when the records are invalid
    */
   checkRaceContestantVotesRecords(
     raceInformationRecords: [ContestantVoteEntity, ContestantVoteEntity],
@@ -57,8 +56,8 @@ export class VotesService {
         `Not necessary amount of total votes was found for the race with ID ${raceId}`
       );
 
-      throw new NotFoundException({
-        error: 'NoRecordsAmountEnough',
+      throw new VotatoonNotFoundException({
+        error: EErrorCode.NO_RECORDS_AMOUNT_ENOUGH,
         message: 'Not necessary amount of votesTotal was found'
       });
     }
@@ -73,8 +72,8 @@ export class VotesService {
         `ID ${raceId} does not match for both records`
       );
 
-      throw new NotFoundException({
-        error: 'NoRecordsAmountEnough',
+      throw new VotatoonNotFoundException({
+        error: EErrorCode.NO_RECORDS_AMOUNT_ENOUGH,
         message: 'Not necessary amount of votesTotal was found'
       });
     }
@@ -84,8 +83,8 @@ export class VotesService {
         `The first record is not for Contestant A on race with ID ${raceId}`
       );
 
-      throw new NotFoundException({
-        error: 'NoRecordsAmountEnough',
+      throw new VotatoonNotFoundException({
+        error: EErrorCode.NO_RECORDS_AMOUNT_ENOUGH,
         message: 'Not necessary amount of votesTotal was found'
       });
     }
@@ -95,8 +94,8 @@ export class VotesService {
         `The second record is not for Contestant B on race with ID ${raceId}`
       );
 
-      throw new NotFoundException({
-        error: 'NoRecordsAmountEnough',
+      throw new VotatoonNotFoundException({
+        error: EErrorCode.NO_RECORDS_AMOUNT_ENOUGH,
         message: 'Not necessary amount of votesTotal was found'
       });
     }
@@ -108,7 +107,7 @@ export class VotesService {
    * @param where Where conditions
    * @param order Order by clause
    * @param take Limit of records to get
-   * @throws `InternalServerErrorException` when there is an error getting the votes
+   * @throws `VotatoonInternalServerErrorException` when there is an error getting the votes
    * @returns `Promise<ContestantVoteEntity[]>`
    */
   async getContestantVotes(
@@ -134,9 +133,9 @@ export class VotesService {
         `Error getting votes for the contestants: ${error}`
       );
 
-      throw new InternalServerErrorException({
-        error: error.name,
-        message: error.message
+      throw new VotatoonInternalServerErrorException({
+        error: EErrorCode.INTERNAL_SERVER_ERROR,
+        message: 'Error getting votes for the contestants'
       });
     }
   }
@@ -146,8 +145,8 @@ export class VotesService {
    *
    * @param contestantType Contestant type
    * @param request The request object
-   * @throws `ConflictException` when the client has already voted
-   * @throws `InternalServerErrorException` when there is an error creating the vote
+   * @throws `VotatoonConflictException` when the client has already voted
+   * @throws `VotatoonInternalServerErrorException` when there is an error creating the vote
    * @returns `Promise<ISuccessResponseMessage>`
    */
   async vote(
@@ -197,8 +196,8 @@ export class VotesService {
         `The client with ID ${clientId} has already voted`
       );
 
-      throw new ConflictException({
-        error: 'ExistingVote',
+      throw new VotatoonConflictException({
+        error: EErrorCode.EXISTING_VOTE,
         message: 'There is already a current vote for this client'
       });
     } catch (error) {
@@ -208,9 +207,9 @@ export class VotesService {
         `Error voting for contestant ${contestantType} on the current race: ${error}`
       );
 
-      throw new InternalServerErrorException({
-        error: error.name,
-        message: error.message
+      throw new VotatoonInternalServerErrorException({
+        error: EErrorCode.INTERNAL_SERVER_ERROR,
+        message: 'Error voting for the current contestant'
       });
     }
   }
@@ -222,7 +221,7 @@ export class VotesService {
    * @param raceId Current active race ID
    * @param raceContestantId Current race contestant ID
    * @param contestantId Current contestant ID
-   * @throws `InternalServerErrorException` when there is an error associating the vote with current connected client
+   * @throws `VotatoonInternalServerErrorException` when there is an error associating the vote with current connected client
    */
   private async addVoteToClient(
     clientId: number,
@@ -241,12 +240,12 @@ export class VotesService {
       await this._CLIENT_VOTES_REPOSITORY.save(newClientVote);
     } catch (error) {
       this._CONSOLE_LOGGER_SERVICE.error(
-        `Error saving vote for new client on race ${raceId}: ${error}`
+        `Error saving vote for client on race ${raceId}: ${error}`
       );
 
-      throw new InternalServerErrorException({
-        error: error.name,
-        message: error.message
+      throw new VotatoonInternalServerErrorException({
+        error: EErrorCode.INTERNAL_SERVER_ERROR,
+        message: 'Error saving vote for client'
       });
     }
   }

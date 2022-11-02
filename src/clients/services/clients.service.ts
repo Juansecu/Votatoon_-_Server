@@ -1,11 +1,11 @@
-import {
-  HttpException,
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException
-} from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+
+import { EErrorCode } from '../../core/enums/error-code.enum';
+
+import { VotatoonInternalServerErrorException } from '../../core/exceptions/votatoon-internal-server-error.exception';
+import { VotatoonNotFoundException } from '../../core/exceptions/votatoon-not-found.exception';
 
 import { ClientEntity } from '../entities/client.entity';
 
@@ -23,7 +23,7 @@ export class ClientsService {
    * Saves IP address from the client.
    *
    * @param ipAddress The IP address from the client to save
-   * @throws `InternalServerErrorException` when an unexpected error occurs while saving the IP address from the client
+   * @throws `VotatoonInternalServerErrorException` when an unexpected error occurs while saving the IP address from the client
    * @returns `Promise<ClientEntity>`
    */
   async addClient(ipAddress: string): Promise<ClientEntity> {
@@ -36,9 +36,9 @@ export class ClientsService {
     } catch (error) {
       this._CONSOLE_LOGGER_SERVICE.error(`Error saving new client: ${error}`);
 
-      throw new InternalServerErrorException({
-        error: error.name,
-        message: error.message
+      throw new VotatoonInternalServerErrorException({
+        error: EErrorCode.INTERNAL_SERVER_ERROR,
+        message: 'Error saving new client'
       });
     }
   }
@@ -47,8 +47,8 @@ export class ClientsService {
    * Finds the client with the given IP address and returns it.
    *
    * @param ipAddress The IP address from the client to search for
-   * @throws `InternalServerErrorException` when an unexpected error occurs while trying to retrieve the client information
-   * @throws `NotFoundException` when the client is not found
+   * @throws `VotatoonInternalServerErrorException` when an unexpected error occurs while trying to retrieve the client information
+   * @throws `VotatoonNotFoundException` when the client is not found
    * @returns `Promise<ClientEntity>`
    */
   async getClientByIpAddress(ipAddress: string): Promise<ClientEntity> {
@@ -75,9 +75,9 @@ export class ClientsService {
         'No client information retrieved. Returning NotFoundException...'
       );
 
-      throw new NotFoundException({
-        error: 'ClientNotFound',
-        message: 'No client object was found'
+      throw new VotatoonNotFoundException({
+        error: EErrorCode.CLIENT_NOT_FOUND,
+        message: 'No client object found'
       });
     } catch (error) {
       if (error instanceof HttpException) throw error;
@@ -86,9 +86,9 @@ export class ClientsService {
         `Error retrieving client information: ${error}`
       );
 
-      throw new InternalServerErrorException({
-        error: error.name,
-        message: error.message
+      throw new VotatoonInternalServerErrorException({
+        error: EErrorCode.INTERNAL_SERVER_ERROR,
+        message: 'Error retrieving client information'
       });
     }
   }

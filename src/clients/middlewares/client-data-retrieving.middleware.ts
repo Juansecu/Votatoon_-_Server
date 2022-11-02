@@ -1,13 +1,12 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  NestMiddleware,
-  NotFoundException
-} from '@nestjs/common';
+import { Injectable, NestMiddleware, NotFoundException } from '@nestjs/common';
 import { NextFunction, Response } from 'express';
 import { getClientIp } from 'request-ip';
 
 import { IRequestClientData } from '../typings/Request';
+
+import { EErrorCode } from '../../core/enums/error-code.enum';
+
+import { VotatoonInternalServerErrorException } from '../../core/exceptions/votatoon-internal-server-error.exception';
 
 import { ClientEntity } from '../entities/client.entity';
 
@@ -33,7 +32,7 @@ export class ClientDataRetrievingMiddleware implements NestMiddleware {
    * @param request The request object
    * @param response The response object
    * @param next The next function
-   * @throws `InternalServerErrorException` when the client data cannot be retrieved
+   * @throws `VotatoonInternalServerErrorException` when the client data cannot be retrieved
    */
   async use(
     request: IRequestClientData,
@@ -73,8 +72,8 @@ export class ClientDataRetrievingMiddleware implements NestMiddleware {
         `Error retrieving client data: ${error}`
       );
 
-      throw new InternalServerErrorException({
-        error: 'ClientNotProcessed',
+      throw new VotatoonInternalServerErrorException({
+        error: EErrorCode.CLIENT_NOT_PROCESSED,
         message: 'Error processing client data'
       });
     }

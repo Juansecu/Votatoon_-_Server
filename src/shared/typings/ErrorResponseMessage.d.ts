@@ -1,4 +1,6 @@
+import { EErrorCode } from '../../core/enums/error-code.enum';
+
 export interface IErrorResponseMessage {
-  error: string;
+  error: EErrorCode;
   message: string;
 }

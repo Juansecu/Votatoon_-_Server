@@ -1,9 +1,9 @@
-import {
-  HttpException,
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException
-} from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
+
+import { EErrorCode } from '../../core/enums/error-code.enum';
+
+import { VotatoonInternalServerErrorException } from '../../core/exceptions/votatoon-internal-server-error.exception';
+import { VotatoonNotFoundException } from '../../core/exceptions/votatoon-not-found.exception';
 
 import { ContestantVoteEntity } from '../../votes/entities/contestant-vote.entity';
 
@@ -22,8 +22,8 @@ export class RacesService {
   /**
    * Gets the current active race.
    *
-   * @throws `InternalServerErrorException` if there is an unexpected exception when trying to get the current race from the database
-   * @throws `NotFoundException` if there are no records for a current active race
+   * @throws `VotatoonInternalServerErrorException` if there is an unexpected exception when trying to get the current race from the database
+   * @throws `VotatoonNotFoundException` if there are no records for a current active race
    * @returns `Promise<RaceDto>`
    */
   async getCurrentRace(): Promise<RaceDto> {
@@ -52,20 +52,20 @@ export class RacesService {
 
       this._CONSOLE_LOGGER_SERVICE.error('No current race was found');
 
-      throw new NotFoundException({
-        error: 'NoActiveRace',
+      throw new VotatoonNotFoundException({
+        error: EErrorCode.NO_ACTIVE_RACE,
         message: 'No active-race was found'
       });
     } catch (error) {
+      if (error instanceof HttpException) throw error;
+
       this._CONSOLE_LOGGER_SERVICE.error(
         `Error getting the current race: ${error}`
       );
 
-      if (error instanceof HttpException) throw error;
-
-      throw new InternalServerErrorException({
-        error: error.name,
-        message: error.message
+      throw new VotatoonInternalServerErrorException({
+        error: EErrorCode.INTERNAL_SERVER_ERROR,
+        message: 'Error getting the current race'
       });
     }
   }
@@ -73,7 +73,7 @@ export class RacesService {
   /**
    * Gets the information of the last two races.
    *
-   * @throws `InternalServerErrorException` when there is an unexpected exception while trying to get the races from the database
+   * @throws `VotatoonInternalServerErrorException` when there is an unexpected exception while trying to get the races from the database
    * @returns `Promise<RaceDto[]>`
    */
   async getRaceList(): Promise<RaceDto[]> {
@@ -138,9 +138,9 @@ export class RacesService {
         `Error getting the race list: ${error}`
       );
 
-      throw new InternalServerErrorException({
-        error: error.name,
-        message: error.message
+      throw new VotatoonInternalServerErrorException({
+        error: EErrorCode.INTERNAL_SERVER_ERROR,
+        message: 'Error getting the race list'
       });
     }
   }

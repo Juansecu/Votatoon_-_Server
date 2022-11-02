@@ -1,9 +1,9 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  NestMiddleware
-} from '@nestjs/common';
+import { Injectable, NestMiddleware } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
+
+import { EErrorCode } from '../../core/enums/error-code.enum';
+
+import { VotatoonInternalServerErrorException } from '../../core/exceptions/votatoon-internal-server-error.exception';
 
 import { ConsoleLoggerService } from '../../loggers/services/console-logger/console-logger.service';
 
@@ -24,7 +24,7 @@ export class CryptographicCredentialsValidationMiddleware
    * @param request The request object
    * @param response The response object
    * @param next The next function
-   * @throws `InternalServerErrorException` when the cryptographic credentials are invalid
+   * @throws `VotatoonInternalServerErrorException` when the cryptographic credentials are invalid
    */
   use(request: Request, response: Response, next: NextFunction): void {
     this._CONSOLE_LOGGER_SERVICE.debug(
@@ -36,8 +36,8 @@ export class CryptographicCredentialsValidationMiddleware
         'Cryptographical information is required to encrypt/decrypt IP address from the clients'
       );
 
-      throw new InternalServerErrorException({
-        error: 'UnavailableService',
+      throw new VotatoonInternalServerErrorException({
+        error: EErrorCode.UNAVAILABLE_SERVICE,
         message: 'This service is temporarily unavailable'
       });
     }
