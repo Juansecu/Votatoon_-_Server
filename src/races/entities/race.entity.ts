@@ -10,8 +10,8 @@ import {
 export class RaceEntity {
   @PrimaryGeneratedColumn('increment', { name: 'Race_id', unsigned: true })
   raceId: number;
-  @Column('tinyint', { name: 'Active', nullable: false, unsigned: true })
-  active: boolean;
+  @Column('tinyint', { name: 'Is_active', nullable: false, unsigned: true })
+  isActive: boolean;
   @CreateDateColumn({
     name: 'Created_at'
   })

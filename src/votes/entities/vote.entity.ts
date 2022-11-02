@@ -13,7 +13,7 @@ import { RaceContestantEntity } from '../../races/entities/race-contestant.entit
     connection
       .createQueryBuilder()
       .select('r.Race_id', 'Race_id')
-      .addSelect('r.Active', 'Active')
+      .addSelect('r.Is_active', 'Is_active')
       .addSelect('rc.Race_contestant_id', 'Race_contestant_id')
       .addSelect('con.Contestant_id', 'Contestant_id')
       .addSelect('con.Name', 'Name')
@@ -31,8 +31,8 @@ import { RaceContestantEntity } from '../../races/entities/race-contestant.entit
 export class VoteEntity {
   @ViewColumn({ name: 'Race_id' })
   raceId: number;
-  @ViewColumn({ name: 'Active' })
-  active: number;
+  @ViewColumn({ name: 'Is_active' })
+  isActive: number;
   @ViewColumn({ name: 'Race_contestant_id' })
   raceContestantId: number;
   @ViewColumn({ name: 'Contestant_id' })

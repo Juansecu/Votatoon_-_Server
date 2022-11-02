@@ -162,13 +162,13 @@ export class VotesService {
           select: ['contestantId', 'raceContestantId', 'raceId'],
           where: {
             contestantType,
-            active: 1
+            isActive: 1
           }
         });
       const currentVoteInformation: VoteEntity =
         await this._VOTES_REPOSITORY.findOne({
           where: {
-            active: 1,
+            isActive: 1,
             ipAddress
           }
         });

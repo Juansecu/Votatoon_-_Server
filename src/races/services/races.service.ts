@@ -34,7 +34,7 @@ export class RacesService {
         ContestantVoteEntity,
         ContestantVoteEntity
       ] = (await this._VOTES_SERVICE.getContestantVotes({
-        active: 1
+        isActive: 1
       })) as [ContestantVoteEntity, ContestantVoteEntity];
 
       if (currentRaceInformation.length) {
@@ -183,7 +183,7 @@ export class RacesService {
       bSmallImagePath: contestantB.smallImagePath,
       aLargeImagePath: contestantA.largeImagePath,
       bLargeImagePath: contestantB.largeImagePath,
-      active: contestantA.active ? true : false
+      active: contestantA.isActive ? true : false
     };
   }
 }

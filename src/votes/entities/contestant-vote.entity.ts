@@ -18,7 +18,7 @@ import { RaceContestantEntity } from '../../races/entities/race-contestant.entit
       .addSelect('c.Small_image_path', 'Small_image_path')
       .addSelect('c.Large_image_path', 'Large_image_path')
       .addSelect('r.Race_id', 'Race_id')
-      .addSelect('r.Active', 'Active')
+      .addSelect('r.Is_active', 'Is_active')
       .addSelect('COUNT(cv.Race_contestant_id)', 'Vote_total_value')
       .addFrom(RaceContestantEntity, 'rc')
       .innerJoin(ContestantEntity, 'c', 'rc.Contestant_id = c.Contestant_id')
@@ -45,8 +45,8 @@ export class ContestantVoteEntity {
   largeImagePath: string;
   @ViewColumn({ name: 'Race_id' })
   raceId: number;
-  @ViewColumn({ name: 'Active' })
-  active: boolean;
+  @ViewColumn({ name: 'Is_active' })
+  isActive: boolean;
   @ViewColumn({ name: 'Vote_total_value' })
   voteTotalValue: number;
 }
