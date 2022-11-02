@@ -1,7 +1,7 @@
 import { Controller, Get, HttpCode, Post, Req } from '@nestjs/common';
 
 import { IRequestClientData } from '../clients/typings/Request';
-import { ISuccessResponseMessage } from '../shared/typings/SuccessResponseMessage';
+import { ISuccessResponseMessage } from '../shared/typings/ResponseMessage';
 
 import { EContestantType } from '../contestants/enums/contestant-type.enum';
 

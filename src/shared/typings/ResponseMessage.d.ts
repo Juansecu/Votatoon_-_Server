@@ -4,3 +4,8 @@ export interface IErrorResponseMessage {
   error: EErrorCode;
   message: string;
 }
+
+export interface ISuccessResponseMessage {
+  success: boolean;
+  message: string;
+}

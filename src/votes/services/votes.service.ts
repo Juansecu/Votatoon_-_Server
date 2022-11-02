@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { IRequestClientData } from '../../clients/typings/Request';
-import { ISuccessResponseMessage } from '../../shared/typings/SuccessResponseMessage';
+import { ISuccessResponseMessage } from '../../shared/typings/ResponseMessage';
 import { TOrderByClause, TWhereClause } from '../../shared/typings/TypeORM';
 
 import { EContestantType } from '../../contestants/enums/contestant-type.enum';
