@@ -46,7 +46,7 @@ export class ContestantVoteEntity {
   @ViewColumn({ name: 'Race_id' })
   raceId: number;
   @ViewColumn({ name: 'Is_active' })
-  isActive: boolean;
+  isActive: number;
   @ViewColumn({ name: 'Vote_total_value' })
   voteTotalValue: number;
 }
