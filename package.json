@@ -1,13 +1,13 @@
 {
-  "name": "votatoon-server",
-  "version": "0.0.1",
+  "name": "votatoon-api",
+  "version": "1.1.0",
   "description": "API for Votatoon",
   "author": "Juansecu",
   "private": true,
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git@github.com:Juansecu/votatoon-server.git"
+    "url": "git@github.com:Juansecu/Votatoon-API.git"
   },
   "scripts": {
     "prebuild": "rimraf dist",
