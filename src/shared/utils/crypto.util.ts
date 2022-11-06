@@ -1,11 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import {
-  Cipher,
-  createCipheriv,
-  createDecipheriv,
-  Decipher,
-  randomBytes
-} from 'crypto';
+import { Cipher, createCipheriv, createDecipheriv, Decipher } from 'crypto';
 
 import { ConsoleLoggerService } from '../../loggers/services/console-logger/console-logger.service';
 
@@ -17,16 +11,12 @@ export class CryptoUtil {
 
   constructor(private readonly _CONSOLE_LOGGER_SERVICE: ConsoleLoggerService) {}
 
-  decrypt(
-    bin: string,
-    securityKey: string = CryptoUtil._SECURITY_KEY,
-    initVector: string = CryptoUtil._INIT_VECTOR
-  ): string {
+  decrypt(bin: string): string {
     let decryptedData: string;
 
     const decipher: Decipher = this.createDecipher(
-      this.getBytesFromString(securityKey),
-      this.getBytesFromString(initVector)
+      this.getBytesFromString(CryptoUtil._SECURITY_KEY),
+      this.getBytesFromString(CryptoUtil._INIT_VECTOR)
     );
 
     decryptedData = decipher.update(bin, 'hex', 'utf-8');
@@ -35,30 +25,18 @@ export class CryptoUtil {
     return decryptedData;
   }
 
-  encrypt(
-    str: string,
-    securityKey: string = CryptoUtil._SECURITY_KEY,
-    initVector: string = CryptoUtil._INIT_VECTOR
-  ): string {
+  encrypt(str: string): string {
     let encryptedData: string;
 
     const cipher: Cipher = this.createCipher(
-      this.getBytesFromString(securityKey),
-      this.getBytesFromString(initVector)
+      this.getBytesFromString(CryptoUtil._SECURITY_KEY),
+      this.getBytesFromString(CryptoUtil._INIT_VECTOR)
     );
 
     encryptedData = cipher.update(str, 'utf-8', 'hex');
     encryptedData += cipher.final('hex');
 
     return encryptedData;
-  }
-
-  generateInitialVector(): string {
-    return randomBytes(16).toString('hex');
-  }
-
-  generateSecurityKey(): string {
-    return randomBytes(32).toString('hex');
   }
 
   isCryptographicInfoValid(): boolean {

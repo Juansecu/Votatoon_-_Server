@@ -7,7 +7,6 @@ import typeOrmModuleOptions from '../ormconfig';
 import { ClientsModule } from './clients/clients.module';
 import { ContestantsModule } from './contestants/contestants.module';
 import { RacesModule } from './races/races.module';
-import { SharedModule } from './shared/shared.module';
 import { VotesModule } from './votes/votes.module';
 
 import { AppController } from './app.controller';
@@ -25,7 +24,6 @@ import { AppService } from './app.service';
     ClientsModule,
     ContestantsModule,
     RacesModule,
-    SharedModule,
     VotesModule
   ],
   controllers: [AppController],
