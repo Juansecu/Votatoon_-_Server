@@ -34,6 +34,7 @@ In order for setting up the Votatoon API, you will need to set up the following 
 - **DATABASE_NAME -** The name of the database to connect to
 - **DATABASE_PASSWORD -** The password of the user who owns the database
 - **DATABASE_PORT -** The port where the database server is running
+- **DATABASE_SYNCHRONIZE -** Whether the database should be synchronized with the entities. Set to `1` for development and first set up of the application, and `0` for production
 - **DATABASE_USERNAME -** The name of the user who owns the database
 - **INIT_VECTOR -** The initial vector that is used to encrypt/decrypt IP addresses from the clients
 - **SECURITY_KEY -** The security key that is used to encrypt/decrypt IP addresses from the clients

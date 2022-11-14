@@ -13,7 +13,7 @@ module.exports = {
   migrationsRun: true,
   password: process.env.DATABASE_PASSWORD,
   port: parseInt(process.env.DATABASE_PORT),
-  synchronize: true,
+  synchronize: process.env.DATABASE_SYNCHRONIZE === '1' ? true : false,
   type: 'mysql',
   username: process.env.DATABASE_USERNAME
 };
