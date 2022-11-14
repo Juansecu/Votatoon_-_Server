@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import typeOrmModuleOptions from '../ormconfig';
@@ -15,7 +14,6 @@ import { AppService } from './app.service';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       ...typeOrmModuleOptions,
       entities: [__dirname + '/**/entities/*.entity.{ts,js}'],

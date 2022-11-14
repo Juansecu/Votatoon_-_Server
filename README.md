@@ -40,23 +40,7 @@ In order for setting up the Votatoon API, you will need to set up the following 
 
 **Note:** You can generate values for `INIT_VECTOR` and `SECURITY_KEY` environment variables by using online tools like **[All Keys Generator](https://www.allkeysgenerator.com/Random/Security-Encryption-Key-Generator.aspx)** (both `INIT_VECTOR` and `SECURITY_KEY` must be 512-bit and not hex). Once you set the values of the environment variables, you will need to create another session in your terminal in order to allow the application to access the new environment variables.
 
-Note that you can set up the environment variables by setting them in a `.env` file stored at same location than `package.json` file, or by setting them for your Operating System internal use.
-
-#### Setting environment variables using `.env` file
-
-After cloning or downloading the source code of this project, you must create a file called `.env` in the root folder of the application, where you will set the environment variables using key-value pairs.
-
-F.E: To define environment variables for getting the connection to the database, you will use this template _(without `{{}}`)_:
-
-```properties
-DATABASE_HOST={{Database host}}
-DATABASE_NAME={{Database name}}
-DATABASE_PASSWORD={{Database password}}
-DATABASE_PORT={{Database port}}
-DATABASE_USERNAME={{Database username}}
-INIT_VECTOR={{Initial vector}}
-SECURITY_KEY={{Security key}}
-```
+Note that you must set up the environment variables by setting them for your Operating System internal use.
 
 #### Setting environment variables in your Operating System
 
@@ -73,7 +57,7 @@ SECURITY_KEY={{Security key}}
 
   Before starting, you must know that you can use the `export` command to set environment variables on Linux, but they may not be available after you leave your current session, so maybe you will want to set the environment variables using `.(bash/zsh)_profile` file.
 
-  1. In order to set the environment variables, you have to use the `export` command followed by the key-value pair (like `.env` file). F.E To set `DATABASE_NAME` environment variable, you must use the command `export DATABASE_NAME={{Database name}}` _(without `{{}}`)_.
+  1. In order to set the environment variables, you have to use the `export` command followed by the key-value pair (like `.env` files). F.E To set `DATABASE_NAME` environment variable, you must use the command `export DATABASE_NAME={{Database name}}` _(without `{{}}`)_.
   2. If you used `.(bash/zsh)_profile` to set the environment variables, you have to use the command `source path/to/profile/file/.(bash/zsh)_profile`, so your current session in the terminal will be updated with the new set environment variables.
 
   For more information about setting environment variables on Linux, you can check out [this tutorial](https://www.serverlab.ca/tutorials/linux/administration-linux/how-to-set-environment-variables-in-linux/).
