@@ -38,7 +38,7 @@ In order for setting up the Votatoon API, you will need to set up the following 
 - **INIT_VECTOR -** The initial vector that is used to encrypt/decrypt IP addresses from the clients
 - **SECURITY_KEY -** The security key that is used to encrypt/decrypt IP addresses from the clients
 
-**Note:** You can generate values for `INIT_VECTOR` and `SECURITY_KEY` environment variables dynamically by accessing the endpoint `/generate-crypto-info` using your web browser. Once you set the values of the environment variables, you will need to create another session in your terminal in order to allow the application to access the new environment variables.
+**Note:** You can generate values for `INIT_VECTOR` and `SECURITY_KEY` environment variables by using online tools like **[All Keys Generator](https://www.allkeysgenerator.com/Random/Security-Encryption-Key-Generator.aspx)** (both `INIT_VECTOR` and `SECURITY_KEY` must be 512-bit and not hex). Once you set the values of the environment variables, you will need to create another session in your terminal in order to allow the application to access the new environment variables.
 
 Note that you can set up the environment variables by setting them in a `.env` file stored at same location than `package.json` file, or by setting them for your Operating System internal use.
 

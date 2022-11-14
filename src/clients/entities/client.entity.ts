@@ -14,7 +14,6 @@ export class ClientEntity {
   })
   clientId: number;
   @Column('varchar', {
-    length: 64,
     name: 'Ip_address',
     nullable: false,
     unique: true

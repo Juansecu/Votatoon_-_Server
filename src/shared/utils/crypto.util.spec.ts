@@ -19,7 +19,7 @@ describe('CryptoUtil', () => {
 
   it('#1 should encrypt IP address', () => {
     const encryptedIpAddress: string = cryptoUtil.encrypt('127.0.0.1');
-    expect(encryptedIpAddress).toHaveLength(32);
+    expect(encryptedIpAddress).toHaveLength(114);
     encryptedIp = encryptedIpAddress;
   });
 

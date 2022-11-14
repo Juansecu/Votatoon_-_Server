@@ -1,42 +1,55 @@
 import { Injectable } from '@nestjs/common';
-import { Cipher, createCipheriv, createDecipheriv, Decipher } from 'crypto';
+import { CipherAlgorithm, decrypt, encrypt, Mode } from 'js-rijndael';
 
 import { ConsoleLoggerService } from '../../loggers/services/console-logger/console-logger.service';
 
+import { bufferToArray } from './functions/bufferToArray.function';
+
 @Injectable()
 export class CryptoUtil {
-  private static readonly _ALGORITHM = 'aes-256-cbc';
+  private static readonly _ALGORITHM: CipherAlgorithm = 'rijndael-256';
   private static readonly _INIT_VECTOR: string = process.env.INIT_VECTOR;
+  private static readonly _MODE: Mode = 'cbc';
   private static readonly _SECURITY_KEY: string = process.env.SECURITY_KEY;
 
   constructor(private readonly _CONSOLE_LOGGER_SERVICE: ConsoleLoggerService) {}
 
   decrypt(bin: string): string {
-    let decryptedData: string;
-
-    const decipher: Decipher = this.createDecipher(
-      this.getBytesFromString(CryptoUtil._SECURITY_KEY),
+    const binArray: number[] = bin.split(',').map(Number);
+    const initVectorArray: number[] = bufferToArray(
       this.getBytesFromString(CryptoUtil._INIT_VECTOR)
     );
+    const keyArray: number[] = bufferToArray(
+      this.getBytesFromString(CryptoUtil._SECURITY_KEY)
+    );
 
-    decryptedData = decipher.update(bin, 'hex', 'utf-8');
-    decryptedData += decipher.final('utf-8');
-
-    return decryptedData;
+    return String.fromCharCode(
+      ...(decrypt(
+        binArray,
+        initVectorArray,
+        keyArray,
+        CryptoUtil._ALGORITHM,
+        CryptoUtil._MODE
+      ) as number[])
+    );
   }
 
   encrypt(str: string): string {
-    let encryptedData: string;
-
-    const cipher: Cipher = this.createCipher(
-      this.getBytesFromString(CryptoUtil._SECURITY_KEY),
+    const initVectorArray: number[] = bufferToArray(
       this.getBytesFromString(CryptoUtil._INIT_VECTOR)
     );
+    const keyArray: number[] = bufferToArray(
+      this.getBytesFromString(CryptoUtil._SECURITY_KEY)
+    );
+    const strArray: number[] = bufferToArray(Buffer.from(str));
 
-    encryptedData = cipher.update(str, 'utf-8', 'hex');
-    encryptedData += cipher.final('hex');
-
-    return encryptedData;
+    return encrypt(
+      strArray,
+      initVectorArray,
+      keyArray,
+      CryptoUtil._ALGORITHM,
+      CryptoUtil._MODE
+    ).toString();
   }
 
   isCryptographicInfoValid(): boolean {
@@ -48,8 +61,8 @@ export class CryptoUtil {
       return false;
     }
 
-    if (CryptoUtil._INIT_VECTOR.length !== 32) {
-      this._CONSOLE_LOGGER_SERVICE.error('INIT_VECTOR length is not 32');
+    if (CryptoUtil._INIT_VECTOR.length !== 64) {
+      this._CONSOLE_LOGGER_SERVICE.error('INIT_VECTOR length is not 64');
       return false;
     } else if (CryptoUtil._SECURITY_KEY.length !== 64) {
       this._CONSOLE_LOGGER_SERVICE.error('SECURITY_KEY length is not 64');
@@ -57,14 +70,6 @@ export class CryptoUtil {
     }
 
     return true;
-  }
-
-  private createCipher(securityKey: Buffer, initVector: Buffer): Cipher {
-    return createCipheriv(CryptoUtil._ALGORITHM, securityKey, initVector);
-  }
-
-  private createDecipher(securityKey: Buffer, initVector: Buffer): Decipher {
-    return createDecipheriv(CryptoUtil._ALGORITHM, securityKey, initVector);
   }
 
   private getBytesFromString(str: string): Buffer {

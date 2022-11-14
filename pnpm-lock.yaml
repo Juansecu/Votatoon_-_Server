@@ -11,6 +11,7 @@ specifiers:
   '@nestjs/typeorm': ^8.0.4
   '@types/express': ^4.17.14
   '@types/jest': ^29.2.1
+  '@types/js-rijndael': ^1.0.0
   '@types/node': ^18.11.9
   '@types/request-ip': ^0.0.37
   '@types/supertest': ^2.0.12
@@ -20,6 +21,7 @@ specifiers:
   eslint-config-prettier: ^8.5.0
   eslint-plugin-prettier: ^4.2.1
   jest: ^29.2.2
+  js-rijndael: ^1.0.0
   mysql2: ^2.3.3
   nodemon: ^2.0.20
   prettier: ^2.7.1
@@ -42,6 +44,7 @@ dependencies:
   '@nestjs/core': 8.4.7_rvglusfgyoseqzubhh6546rvkq
   '@nestjs/platform-express': 8.4.7_7tsmhnugyerf5okgqzer2mfqme
   '@nestjs/typeorm': 8.0.4_zo7yizisrklow4wxdrpupzkeo4
+  js-rijndael: 1.0.0
   mysql2: 2.3.3
   reflect-metadata: 0.1.13
   request-ip: 3.3.0
@@ -55,6 +58,7 @@ devDependencies:
   '@nestjs/testing': 8.4.7_yg656aic4dli3q2c2sx4xyqza4
   '@types/express': 4.17.14
   '@types/jest': 29.2.1
+  '@types/js-rijndael': 1.0.0
   '@types/node': 18.11.9
   '@types/request-ip': 0.0.37
   '@types/supertest': 2.0.12
@@ -1220,6 +1224,10 @@ packages:
     dependencies:
       expect: 29.2.2
       pretty-format: 29.2.1
+    dev: true
+
+  /@types/js-rijndael/1.0.0:
+    resolution: {integrity: sha512-QP75MRH/bTFQmyUo4OV3+btEe8Fbe487k9IcdTPDDJc1AVceFqVjw132KFPfY4yS4bJEcrLCgJAm9rSsuAJ5mQ==}
     dev: true
 
   /@types/json-schema/7.0.11:
@@ -3579,6 +3587,10 @@ packages:
       - supports-color
       - ts-node
     dev: true
+
+  /js-rijndael/1.0.0:
+    resolution: {integrity: sha512-KFr4bb2gQ1lIuhjo0VfsO4SL2YQhc+FuozvN9cH6NqBlG0DjRQuurF5u1dFZRM32eHQgcASyX5p5TSG75MLeqg==}
+    dev: false
 
   /js-sdsl/4.1.5:
     resolution: {integrity: sha512-08bOAKweV2NUC1wqTtf3qZlnpOX/R2DU9ikpjOHs0H+ibQv3zpncVQg6um4uYtRtrwIX8M4Nh3ytK4HGlYAq7Q==}
