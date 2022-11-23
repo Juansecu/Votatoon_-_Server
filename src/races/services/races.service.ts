@@ -20,6 +20,48 @@ export class RacesService {
   ) {}
 
   /**
+   * Creates the response for the given race information.
+   *
+   * @param raceInformation Votes for contestants **a** and **b**
+   * @param index Index for the current race information. It's **0** by default
+   * @returns `RaceDto`
+   */
+  public createRaceInformationResponse(
+    raceInformation: [ContestantVoteEntity, ContestantVoteEntity],
+    index = 0
+  ): RaceDto {
+    const contestantA: ContestantVoteEntity = raceInformation[0];
+    const contestantB: ContestantVoteEntity = raceInformation[1];
+
+    contestantA.voteTotalValue = Number(contestantA.voteTotalValue);
+    contestantB.voteTotalValue = Number(contestantB.voteTotalValue);
+
+    return {
+      id: contestantA.raceId,
+      index: index,
+      toonA: contestantA.name,
+      toonB: contestantB.name,
+      aVotesPercent: Math.round(
+        (contestantA.voteTotalValue /
+          (contestantA.voteTotalValue + contestantB.voteTotalValue)) *
+          100
+      ),
+      bVotesPercent: Math.round(
+        (contestantB.voteTotalValue /
+          (contestantA.voteTotalValue + contestantB.voteTotalValue)) *
+          100
+      ),
+      aVotesTotal: contestantA.voteTotalValue,
+      bVotesTotal: contestantB.voteTotalValue,
+      aSmallImagePath: contestantA.smallImagePath,
+      bSmallImagePath: contestantB.smallImagePath,
+      aLargeImagePath: contestantA.largeImagePath,
+      bLargeImagePath: contestantB.largeImagePath,
+      active: contestantA.isActive ? true : false
+    };
+  }
+
+  /**
    * Gets the current active race.
    *
    * @throws `VotatoonInternalServerErrorException` if there is an unexpected exception when trying to get the current race from the database
@@ -65,7 +107,7 @@ export class RacesService {
 
       throw new VotatoonInternalServerErrorException({
         error: EErrorCode.INTERNAL_SERVER_ERROR,
-        message: 'Error getting the current race'
+        message: 'Error getting details from the current race'
       });
     }
   }
@@ -143,47 +185,5 @@ export class RacesService {
         message: 'Error getting the race list'
       });
     }
-  }
-
-  /**
-   * Creates the response for the given race information.
-   *
-   * @param raceInformation Votes for contestants **a** and **b**
-   * @param index Index for the current race information. It's **0** by default
-   * @returns `RaceDto`
-   */
-  private createRaceInformationResponse(
-    raceInformation: [ContestantVoteEntity, ContestantVoteEntity],
-    index = 0
-  ): RaceDto {
-    const contestantA: ContestantVoteEntity = raceInformation[0];
-    const contestantB: ContestantVoteEntity = raceInformation[1];
-
-    contestantA.voteTotalValue = Number(contestantA.voteTotalValue);
-    contestantB.voteTotalValue = Number(contestantB.voteTotalValue);
-
-    return {
-      id: contestantA.raceId,
-      index: index,
-      toonA: contestantA.name,
-      toonB: contestantB.name,
-      aVotesPercent: Math.round(
-        (contestantA.voteTotalValue /
-          (contestantA.voteTotalValue + contestantB.voteTotalValue)) *
-          100
-      ),
-      bVotesPercent: Math.round(
-        (contestantB.voteTotalValue /
-          (contestantA.voteTotalValue + contestantB.voteTotalValue)) *
-          100
-      ),
-      aVotesTotal: contestantA.voteTotalValue,
-      bVotesTotal: contestantB.voteTotalValue,
-      aSmallImagePath: contestantA.smallImagePath,
-      bSmallImagePath: contestantB.smallImagePath,
-      aLargeImagePath: contestantA.largeImagePath,
-      bLargeImagePath: contestantB.largeImagePath,
-      active: contestantA.isActive ? true : false
-    };
   }
 }

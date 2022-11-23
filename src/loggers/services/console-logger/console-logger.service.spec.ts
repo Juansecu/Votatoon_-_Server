@@ -10,11 +10,12 @@ describe('ConsoleLoggerService', () => {
       providers: [ConsoleLoggerService]
     }).compile();
 
-    consoleLoggerService =
-      module.get<ConsoleLoggerService>(ConsoleLoggerService);
+    consoleLoggerService = await module.resolve<ConsoleLoggerService>(
+      ConsoleLoggerService
+    );
   });
 
-  it('should be defined', () => {
+  it('consoleLoggerService should be defined', () => {
     expect(consoleLoggerService).toBeDefined();
   });
 });

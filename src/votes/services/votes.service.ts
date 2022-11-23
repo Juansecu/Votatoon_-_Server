@@ -87,9 +87,7 @@ export class VotesService {
         error: EErrorCode.NO_RECORDS_AMOUNT_ENOUGH,
         message: 'Not necessary amount of votesTotal was found'
       });
-    }
-
-    if (raceInformationRecords[1].contestantType != EContestantType.B) {
+    } else if (raceInformationRecords[1].contestantType != EContestantType.B) {
       this._CONSOLE_LOGGER_SERVICE.error(
         `The second record is not for Contestant B on race with ID ${raceId}`
       );
@@ -173,7 +171,6 @@ export class VotesService {
           }
         });
 
-      // TODO: Add current vote to the current client with addVoteToCurrentClient method.
       if (!currentVoteInformation) {
         await this.addVoteToClient(
           clientId,

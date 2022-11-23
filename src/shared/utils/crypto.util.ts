@@ -3,7 +3,7 @@ import { CipherAlgorithm, decrypt, encrypt, Mode } from 'js-rijndael';
 
 import { ConsoleLoggerService } from '../../loggers/services/console-logger/console-logger.service';
 
-import { bufferToArray } from './functions/bufferToArray.function';
+import { bufferToArray } from './functions/buffer-to-array/buffer-to-array.function';
 
 @Injectable()
 export class CryptoUtil {

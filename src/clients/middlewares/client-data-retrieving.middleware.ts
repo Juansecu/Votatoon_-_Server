@@ -14,7 +14,7 @@ import { ClientsService } from '../services/clients.service';
 import { ConsoleLoggerService } from '../../loggers/services/console-logger/console-logger.service';
 
 import { CryptoUtil } from '../../shared/utils/crypto.util';
-import { setValue } from '../../shared/utils/functions/setValue.function';
+import { setValue } from '../../shared/utils/functions/set-value/set-value.function';
 
 @Injectable()
 export class ClientDataRetrievingMiddleware implements NestMiddleware {
