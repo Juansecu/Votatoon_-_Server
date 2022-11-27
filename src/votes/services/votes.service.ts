@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { IRequestClientData } from '../../clients/typings/Request';
-import { ISuccessResponseMessage } from '../../shared/typings/ResponseMessage';
 import { TOrderByClause, TWhereClause } from '../../shared/typings/TypeORM';
 
 import { EContestantType } from '../../contestants/enums/contestant-type.enum';
@@ -17,6 +16,8 @@ import { ClientVoteEntity } from '../entities/client-vote.entity';
 import { ContestantVoteEntity } from '../entities/contestant-vote.entity';
 import { VoteEntity } from '../entities/vote.entity';
 import { ClientEntity } from '../../clients/entities/client.entity';
+
+import { SuccessResMessage } from '../../shared/dtos/response/success.res.dto';
 
 import { ConsoleLoggerService } from '../../loggers/services/console-logger/console-logger.service';
 
@@ -58,7 +59,7 @@ export class VotesService {
 
       throw new VotatoonNotFoundException({
         error: EErrorCode.NO_RECORDS_AMOUNT_ENOUGH,
-        message: 'Not necessary amount of votesTotal was found'
+        message: 'Not necessary amount of votes total was found'
       });
     }
 
@@ -145,12 +146,12 @@ export class VotesService {
    * @param request The request object
    * @throws `VotatoonConflictException` when the client has already voted
    * @throws `VotatoonInternalServerErrorException` when there is an error creating the vote
-   * @returns `Promise<ISuccessResponseMessage>`
+   * @returns `Promise<SuccessResMessage>`
    */
   async vote(
     contestantType: EContestantType,
     request: IRequestClientData
-  ): Promise<ISuccessResponseMessage> {
+  ): Promise<SuccessResMessage> {
     try {
       this._CONSOLE_LOGGER_SERVICE.debug('Initializing vote service...');
 
@@ -185,7 +186,7 @@ export class VotesService {
 
         return {
           success: true,
-          message: 'Vote saved'
+          message: 'The vote has been cast'
         };
       }
 

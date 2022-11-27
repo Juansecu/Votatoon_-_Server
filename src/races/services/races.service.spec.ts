@@ -14,7 +14,7 @@ import { clientVotesRepository } from '../../votes/mocks/factories/client-votes-
 import { contestantVotesRepository } from '../../votes/mocks/factories/contestant-votes-repository.mock-factory';
 import { votesRepository } from '../../votes/mocks/factories/votes-repository.mock-factory';
 
-import { RaceDto } from '../dtos/Race.dto';
+import { RaceResDto } from '../dtos/response/race.res.dto';
 
 import { RacesService } from './races.service';
 import { ConsoleLoggerService } from '../../loggers/services/console-logger/console-logger.service';
@@ -53,7 +53,7 @@ describe('RacesService', () => {
 
   describe('createRaceInformationResponse', () => {
     it('#1 should create a race information response', () => {
-      const raceInformationResponse: RaceDto =
+      const raceInformationResponse: RaceResDto =
         racesService.createRaceInformationResponse(
           contestantVotes.slice(contestantVotes.length - 2) as [
             ContestantVoteEntity,
@@ -62,7 +62,7 @@ describe('RacesService', () => {
         );
 
       expect(raceInformationResponse).toBeDefined();
-      expect(raceInformationResponse).toMatchObject<RaceDto>({
+      expect(raceInformationResponse).toMatchObject<RaceResDto>({
         id: 4,
         index: 0,
         toonA: 'Contestant 7',
@@ -94,11 +94,11 @@ describe('RacesService', () => {
     });
 
     it('#1 should return the current race information', async () => {
-      const currentRaceInformation: RaceDto =
+      const currentRaceInformation: RaceResDto =
         await racesService.getCurrentRace();
 
       expect(currentRaceInformation).toBeDefined();
-      expect(currentRaceInformation).toMatchObject<RaceDto>({
+      expect(currentRaceInformation).toMatchObject<RaceResDto>({
         id: 3,
         index: 0,
         toonA: 'Contestant 5',
@@ -119,7 +119,7 @@ describe('RacesService', () => {
       expect(() => racesService.getCurrentRace()).rejects.toThrowError(
         new VotatoonNotFoundException({
           error: EErrorCode.NO_ACTIVE_RACE,
-          message: 'No active-race was found'
+          message: 'No active race was found'
         })
       );
     });
@@ -134,12 +134,12 @@ describe('RacesService', () => {
     });
 
     it('#1 should return the information of the last two races', async () => {
-      const raceList: RaceDto[] = await racesService.getRaceList();
+      const raceList: RaceResDto[] = await racesService.getRaceList();
 
       expect(raceList).toBeDefined();
       expect(raceList).toBeInstanceOf(Array);
       expect(raceList).toHaveLength(2);
-      expect(raceList).toMatchObject<RaceDto[]>([
+      expect(raceList).toMatchObject<RaceResDto[]>([
         {
           id: 3,
           index: 0,

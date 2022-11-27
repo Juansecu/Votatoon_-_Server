@@ -16,12 +16,12 @@ describe('AppController', () => {
     appController = app.get<AppController>(AppController);
   });
 
-  describe('root', () => {
-    it('should return "Hello World!"', () => {
+  describe('getCrossDoman', () => {
+    it('should return the cross domain policy', () => {
       expect(appController.getCrossDoman()).toBe(
         `<?xml version="1.0" encoding="utf-8" ?>
       <cross-domain-policy>
-        <allow-access-from domain="*"/>
+        <allow-access-from domain="*" />
       </cross-domain-policy>`
       );
     });

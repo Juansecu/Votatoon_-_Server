@@ -7,7 +7,7 @@ import { VotatoonNotFoundException } from '../../core/exceptions/votatoon-not-fo
 
 import { ContestantVoteEntity } from '../../votes/entities/contestant-vote.entity';
 
-import { RaceDto } from '../dtos/Race.dto';
+import { RaceResDto } from '../dtos/response/race.res.dto';
 
 import { ConsoleLoggerService } from '../../loggers/services/console-logger/console-logger.service';
 import { VotesService } from '../../votes/services/votes.service';
@@ -29,7 +29,7 @@ export class RacesService {
   public createRaceInformationResponse(
     raceInformation: [ContestantVoteEntity, ContestantVoteEntity],
     index = 0
-  ): RaceDto {
+  ): RaceResDto {
     const contestantA: ContestantVoteEntity = raceInformation[0];
     const contestantB: ContestantVoteEntity = raceInformation[1];
 
@@ -68,7 +68,7 @@ export class RacesService {
    * @throws `VotatoonNotFoundException` if there are no records for a current active race
    * @returns `Promise<RaceDto>`
    */
-  async getCurrentRace(): Promise<RaceDto> {
+  async getCurrentRace(): Promise<RaceResDto> {
     try {
       this._CONSOLE_LOGGER_SERVICE.verbose('Getting current race...');
 
@@ -96,7 +96,7 @@ export class RacesService {
 
       throw new VotatoonNotFoundException({
         error: EErrorCode.NO_ACTIVE_RACE,
-        message: 'No active-race was found'
+        message: 'No active race was found'
       });
     } catch (error) {
       if (error instanceof HttpException) throw error;
@@ -118,13 +118,13 @@ export class RacesService {
    * @throws `VotatoonInternalServerErrorException` when there is an unexpected exception while trying to get the races from the database
    * @returns `Promise<RaceDto[]>`
    */
-  async getRaceList(): Promise<RaceDto[]> {
+  async getRaceList(): Promise<RaceResDto[]> {
     try {
       this._CONSOLE_LOGGER_SERVICE.verbose('Getting race list...');
 
       const raceIds: Set<number> = new Set();
       const races: [ContestantVoteEntity, ContestantVoteEntity][] = [];
-      const raceList: RaceDto[] = [];
+      const raceList: RaceResDto[] = [];
       const racesInformation: ContestantVoteEntity[] =
         await this._VOTES_SERVICE.getContestantVotes(
           {},
@@ -160,7 +160,7 @@ export class RacesService {
       );
 
       for (let i = 0; i < races.length; i++) {
-        const raceInformation: RaceDto = this.createRaceInformationResponse(
+        const raceInformation: RaceResDto = this.createRaceInformationResponse(
           races[i],
           i
         );

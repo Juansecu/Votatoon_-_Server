@@ -1,9 +1,9 @@
 import { ConflictException } from '@nestjs/common';
 
-import { IErrorResponseMessage } from '../../shared/typings/ResponseMessage';
+import { ErrorResMessage } from '../../shared/dtos/response/error.res.dto';
 
 export class VotatoonConflictException extends ConflictException {
-  constructor(errorMessage: IErrorResponseMessage) {
+  constructor(errorMessage: ErrorResMessage) {
     super(errorMessage);
   }
 }

@@ -3,7 +3,6 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { request } from 'express';
 
 import { IRequestClientData } from '../../clients/typings/Request';
-import { ISuccessResponseMessage } from '../../shared/typings/ResponseMessage';
 
 import { EContestantType } from '../../contestants/enums/contestant-type.enum';
 import { EErrorCode } from '../../core/enums/error-code.enum';
@@ -20,6 +19,8 @@ import { contestantVotes } from '../mocks/contestant-votes.mock';
 import { clientVotesRepository } from '../mocks/factories/client-votes-repository.mock-factory';
 import { contestantVotesRepository } from '../mocks/factories/contestant-votes-repository.mock-factory';
 import { votesRepository } from '../mocks/factories/votes-repository.mock-factory';
+
+import { SuccessResMessage } from '../../shared/dtos/response/success.res.dto';
 
 import { VotesService } from './votes.service';
 import { ConsoleLoggerService } from '../../loggers/services/console-logger/console-logger.service';
@@ -72,7 +73,7 @@ describe('VotesService', () => {
       ).toThrowError(
         new VotatoonNotFoundException({
           error: EErrorCode.NO_RECORDS_AMOUNT_ENOUGH,
-          message: 'Not necessary amount of votesTotal was found'
+          message: 'Not necessary amount of votes total was found'
         })
       );
     });
@@ -231,14 +232,14 @@ describe('VotesService', () => {
     });
 
     it('#1 should return a successful response', async () => {
-      const result: ISuccessResponseMessage = await votesService.vote(
+      const result: SuccessResMessage = await votesService.vote(
         EContestantType.A,
         request as IRequestClientData
       );
 
       expect(result).toBeDefined();
-      expect(result).toMatchObject<ISuccessResponseMessage>({
-        message: 'Vote saved',
+      expect(result).toMatchObject<SuccessResMessage>({
+        message: 'The vote has been cast',
         success: true
       });
     });

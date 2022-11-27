@@ -28,13 +28,16 @@
     "@nestjs/common": "^8.4.7",
     "@nestjs/core": "^8.4.7",
     "@nestjs/platform-express": "^8.4.7",
+    "@nestjs/swagger": "5.2.1",
     "@nestjs/typeorm": "^8.0.4",
+    "express": "^4.18.2",
     "js-rijndael": "^1.0.0",
     "mysql2": "^2.3.3",
     "reflect-metadata": "^0.1.13",
     "request-ip": "^3.3.0",
     "rimraf": "^3.0.2",
     "rxjs": "^7.5.7",
+    "swagger-ui-express": "^4.6.0",
     "typeorm": "^0.2.41"
   },
   "devDependencies": {

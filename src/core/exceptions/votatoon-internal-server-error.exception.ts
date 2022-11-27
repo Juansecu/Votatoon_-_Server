@@ -1,9 +1,9 @@
 import { InternalServerErrorException } from '@nestjs/common';
 
-import { IErrorResponseMessage } from '../../shared/typings/ResponseMessage';
+import { ErrorResMessage } from '../../shared/dtos/response/error.res.dto';
 
 export class VotatoonInternalServerErrorException extends InternalServerErrorException {
-  constructor(errorMessage: IErrorResponseMessage) {
+  constructor(errorMessage: ErrorResMessage) {
     super(errorMessage);
   }
 }
