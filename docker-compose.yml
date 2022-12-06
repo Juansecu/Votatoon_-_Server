@@ -1,0 +1,49 @@
+version: '3.4'
+
+services:
+  mysql:
+    image: mysql:8.0.31
+    container_name: votatoon-api_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DATABASE_NAME}
+      MYSQL_USER: ${DATABASE_USERNAME}
+      MYSQL_PASSWORD: ${DATABASE_PASSWORD}
+    ports:
+      - ${DATABASE_PORT}:3306
+    volumes:
+      - ./db/var/lib/mysql:/var/lib/mysql
+      - ./db/etc/mysql/my.cnf:/etc/mysql/my.cnf
+    networks:
+      - votatoon-api_network
+
+  votatoon-api:
+    image: votatoon-api
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    restart: on-failure
+    environment:
+      DATABASE_HOST: mysql
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_PORT: ${DATABASE_PORT}
+      DATABASE_SYNCHRONIZE: ${DATABASE_SYNCHRONIZE}
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      INIT_VECTOR: ${INIT_VECTOR}
+      PORT: 3000
+      SECURITY_KEY: ${SECURITY_KEY}
+    ports:
+      - 3000:3000
+    depends_on:
+      - mysql
+    networks:
+      - votatoon-api_network
+
+networks:
+  votatoon-api_network:
+    driver: bridge
+
+volumes:
+  db:
