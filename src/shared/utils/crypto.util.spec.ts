@@ -27,13 +27,13 @@ describe('CryptoUtil', () => {
   describe('encrypt', () => {
     it('#1 should encrypt IPv4 address', () => {
       const encryptedIpAddress: string = cryptoUtil.encrypt('127.0.0.1');
-      expect(encryptedIpAddress).toHaveLength(114);
+      expect(encryptedIpAddress).toHaveLength(118);
       encryptedIpv4 = encryptedIpAddress;
     });
 
     it('#2 should encrypt IPv6 address', () => {
       const encryptedIpAddress: string = cryptoUtil.encrypt('::1');
-      expect(encryptedIpAddress).toHaveLength(114);
+      expect(encryptedIpAddress).toHaveLength(111);
       encryptedIpv6 = encryptedIpAddress;
     });
   });

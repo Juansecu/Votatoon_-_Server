@@ -39,9 +39,15 @@ In order for setting up the Votatoon API, you will need to set up the following 
 - **INIT_VECTOR -** The initial vector that is used to encrypt/decrypt IP addresses from the clients
 - **SECURITY_KEY -** The security key that is used to encrypt/decrypt IP addresses from the clients
 
-**Note:** You can generate values for `INIT_VECTOR` and `SECURITY_KEY` environment variables by using online tools like **[All Keys Generator](https://www.allkeysgenerator.com/Random/Security-Encryption-Key-Generator.aspx)** (both `INIT_VECTOR` and `SECURITY_KEY` must be 512-bit and not hex). Once you set the values of the environment variables, you will need to create another session in your terminal in order to allow the application to access the new environment variables.
+**IMPORTANT:**
 
-Note that you must set up the environment variables by setting them for your Operating System internal use.
+- You can generate values for `INIT_VECTOR` and `SECURITY_KEY` environment variables by using online tools like **[All Keys Generator](https://www.allkeysgenerator.com/Random/Security-Encryption-Key-Generator.aspx)**.
+- Both `INIT_VECTOR` and `SECURITY_KEY` must be 512-bit, must have 32 characters and cannot be hex (unless they're 256-bit).
+- Avoid using the same value for both `INIT_VECTOR` and `SECURITY_KEY` environment variables.
+- You can set the values of the environment variables in your terminal by using the `export` command.
+- Avoid using characters like `"`, `'`, `$` and `!` in the values of the environment variables.
+- Once you set the values of the environment variables, you will need to create another session in your terminal in order to allow the application to access the new environment variables.
+- You must set up the environment variables by setting them for your Operating System internal use.
 
 #### Setting environment variables in your Operating System
 
