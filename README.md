@@ -75,6 +75,10 @@ This application needs port **3000** by default for running on, but if you want 
 
 Note that this behavior allows you to deploy your own instance using a VPS/PaaS like Heroku or Digital Ocean.
 
+## API documentation
+
+Once you have running the application, you can go to `http://<address of host where you're running the application>:<port where you're running the application>/api` to see the API documentation, so you can understand how this application works when it receives any request.
+
 ## Installation
 
 ```bash
